@@ -11,10 +11,11 @@ class AuthStatusInitial extends AuthStatusState {}
 
 class Authenticated extends AuthStatusState {
   final String uid;
+  final bool isRegistration;
 
-  const Authenticated({required this.uid});
+  const Authenticated({required this.uid, required this.isRegistration});
   @override
-  List<Object> get props => [uid];
+  List<Object> get props => [uid, isRegistration];
 }
 
 class UnAuthenticated extends AuthStatusState {}

@@ -17,6 +17,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
   final _textEditingController = TextEditingController();
   bool isCheckedUserAgreement = false;
   bool isCheckedPrivacyPolicy = false;
+  bool numberLentghError = false;
 
   @override
   void dispose() {
@@ -27,12 +28,14 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: BlocSelector<PhoneAuthBloc, PhoneAuthState, bool>(
-            selector: (state) {
+      resizeToAvoidBottomInset: false,
+      body: BlocSelector<PhoneAuthBloc, PhoneAuthState, bool>(
+        selector: (state) {
           if (state is PhoneAuthCodeSentSuccess) {
             context.router.push(EnterPinRoute(
               verId: state.verificationId,
+              isRegistration: true,
+              phoneNumber: _textEditingController.text,
             ));
           }
           if (state is PhoneAuthError) {
@@ -43,8 +46,75 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
             );
           }
 
+          if (state is PhoneAuthPhoneNumberExist) {
+            showModalBottomSheet<Widget?>(
+              useRootNavigator: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
+              ),
+              context: context,
+              builder: (context) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 40,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'A user with this number is already\nregistered. Log in to the app, please',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 29,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.router.pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          side: BorderSide.none,
+                          elevation: 0,
+                          primary: AppColors.orange,
+                          fixedSize: Size(
+                            MediaQuery.of(context).size.width,
+                            52,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide.none,
+                          ),
+                        ),
+                        child: const Text(
+                          'Okay',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      // const SizedBox(
+                      //   height: 16,
+                      // ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+
           return state is PhoneAuthLoading;
-        }, builder: (context, showLoading) {
+        },
+        builder: (context, showLoading) {
           return Container(
             padding: const EdgeInsets.only(
               right: 16,
@@ -55,7 +125,9 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
             height: MediaQuery.of(context).size.height,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('assets/bg.png'), fit: BoxFit.fill),
+                image: AssetImage('assets/bg.png'),
+                fit: BoxFit.fill,
+              ),
             ),
             child: Column(
               children: [
@@ -64,9 +136,10 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   child: Text(
                     'Welcome to',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 30),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 30,
+                    ),
                   ),
                 ),
                 const Align(
@@ -74,33 +147,40 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   child: Text(
                     'Qpay',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 60),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 60,
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 54,
                 ),
                 TextField(
-                  // onChanged: (number){
-
-                  // },
+                  onSubmitted: (value) {
+                    setState(() {
+                      numberLentghError = value.length < 13 ? true : false;
+                    });
+                  },
                   controller: _textEditingController,
                   style: const TextStyle(
                     color: Colors.white,
                   ),
                   maxLength: 13,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     focusColor: Colors.white,
                     labelText: 'Phone number',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white, width: 2)),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 2),
+                    ),
+                    errorText: numberLentghError == false
+                        ? null
+                        : 'Invalid phone number',
                   ),
                 ),
                 const SizedBox(
@@ -110,10 +190,13 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   children: [
                     Checkbox(
                       shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
                       side: MaterialStateBorderSide.resolveWith(
-                        (states) =>
-                            const BorderSide(width: 1.0, color: Colors.white),
+                        (states) => !isCheckedUserAgreement &&
+                                _textEditingController.text.isNotEmpty
+                            ? const BorderSide(width: 1, color: Colors.red)
+                            : const BorderSide(width: 1, color: Colors.white),
                       ),
                       focusColor: Colors.white,
                       fillColor:
@@ -121,6 +204,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                         if (states.contains(MaterialState.selected)) {
                           return Colors.transparent;
                         }
+
                         return Colors.white;
                       }),
                       value: isCheckedUserAgreement,
@@ -131,12 +215,15 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                       },
                     ),
                     RichText(
-                      text: const TextSpan(
+                      text: TextSpan(
                         children: [
                           TextSpan(
                             text: 'I agree with the terms of the',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: !isCheckedUserAgreement &&
+                                      _textEditingController.text.isNotEmpty
+                                  ? Colors.red
+                                  : Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                             ),
@@ -144,16 +231,19 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                           TextSpan(
                             text: 'User Agreement',
                             style: TextStyle(
-                              shadows: [
-                                Shadow(
-                                    color: Colors.white, offset: Offset(0, -5))
-                              ],
-                              color: Colors.transparent,
+                              // shadows: [
+                              //   Shadow(
+                              //       color: Colors.white, offset: Offset(0, -5)),
+                              // ],
+                              color: !isCheckedUserAgreement &&
+                                      _textEditingController.text.isNotEmpty
+                                  ? Colors.red
+                                  : Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
-                              decorationThickness: 4,
-                              decorationColor: Colors.white,
+                              decorationThickness: 3,
+                              // decorationColor: Colors.white,
                             ),
                           ),
                         ],
@@ -165,12 +255,13 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   children: [
                     Checkbox(
                       shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
                       side: MaterialStateBorderSide.resolveWith(
-                        (states) => (isCheckedPrivacyPolicy == false &&
-                                _textEditingController.text.isNotEmpty)
-                            ? const BorderSide(width: 1.0, color: Colors.red)
-                            : const BorderSide(width: 1.0, color: Colors.white),
+                        (states) => !isCheckedPrivacyPolicy &&
+                                _textEditingController.text.isNotEmpty
+                            ? const BorderSide(width: 1, color: Colors.red)
+                            : const BorderSide(width: 1, color: Colors.white),
                       ),
                       focusColor: Colors.white,
                       fillColor:
@@ -178,6 +269,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                         if (states.contains(MaterialState.selected)) {
                           return Colors.transparent;
                         }
+
                         return Colors.white;
                       }),
                       value: isCheckedPrivacyPolicy,
@@ -193,8 +285,8 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                           TextSpan(
                             text: 'I agree with the terms of the',
                             style: TextStyle(
-                              color: (isCheckedPrivacyPolicy == false &&
-                                      _textEditingController.text.isNotEmpty)
+                              color: !isCheckedPrivacyPolicy &&
+                                      _textEditingController.text.isNotEmpty
                                   ? Colors.red
                                   : Colors.white,
                               fontSize: 14,
@@ -204,8 +296,8 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                           TextSpan(
                             text: 'Privacy Policy',
                             style: TextStyle(
-                              color: (isCheckedPrivacyPolicy == false &&
-                                      _textEditingController.text.isNotEmpty)
+                              color: !isCheckedPrivacyPolicy &&
+                                      _textEditingController.text.isNotEmpty
                                   ? Colors.red
                                   : Colors.white,
                               fontSize: 14,
@@ -223,24 +315,27 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   height: 32,
                 ),
                 ElevatedButton(
-                  onPressed: _sendOtp,
+                  onPressed: numberLentghError == false &&
+                          isCheckedPrivacyPolicy &&
+                          isCheckedUserAgreement
+                      ? _sendOtp
+                      : null,
                   style: ElevatedButton.styleFrom(
-                    primary: (_textEditingController.text.length < 12 &&
-                            isCheckedUserAgreement == false &&
-                            isCheckedPrivacyPolicy == false)
-                        ? Colors.transparent
-                        : AppColors.orange,
+                    primary: AppColors.orange,
                     fixedSize: Size(MediaQuery.of(context).size.width, 52),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: const BorderSide(color: AppColors.grey)),
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: AppColors.grey),
+                    ),
                   ),
                   child: Text(
-                    'Sign in',
+                    'Send code',
                     style: TextStyle(
-                      color: _textEditingController.text.length < 12
-                          ? AppColors.grey
-                          : Colors.white,
+                      color: numberLentghError == false &&
+                              isCheckedPrivacyPolicy &&
+                              isCheckedUserAgreement
+                          ? Colors.white
+                          : AppColors.grey,
                     ),
                   ),
                 ),
@@ -257,8 +352,9 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                           fixedSize:
                               Size(MediaQuery.of(context).size.width, 52),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: const BorderSide(color: AppColors.grey)),
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(color: AppColors.grey),
+                          ),
                         ),
                         child: SvgPicture.asset('assets/icons/apple.svg'),
                       ),
@@ -268,24 +364,31 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                     ),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context
+                              .read<PhoneAuthBloc>()
+                              .add(OnPhoneAuthGoogleSignIn());
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.white,
                           fixedSize:
                               Size(MediaQuery.of(context).size.width, 52),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: const BorderSide(color: AppColors.grey)),
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(color: AppColors.grey),
+                          ),
                         ),
                         child: SvgPicture.asset('assets/icons/google.svg'),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 
   void _sendOtp() {
@@ -293,6 +396,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
     context.read<PhoneAuthBloc>().add(
           SendOtpToPhoneEvent(
             phoneNumber: phoneNumberWithCode,
+            isRegistration: true,
           ),
         );
   }

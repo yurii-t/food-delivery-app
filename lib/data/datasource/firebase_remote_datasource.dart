@@ -19,4 +19,8 @@ abstract class FirebaseRemoteDataSource {
   Future<bool> isSignIn();
 
   Future<void> signOut();
+
+  Future<CurrentUser> getCurrentUserInfo();
+  Future<bool> phoneNumberExistsCheck(String phoneNumber);
+  Future<OAuthCredential> signInWithGoogle();
 }

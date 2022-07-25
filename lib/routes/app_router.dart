@@ -7,6 +7,7 @@ import 'package:food_delivery_app/presentation/pages/home/cafe/time_select_page.
 import 'package:food_delivery_app/presentation/pages/home/cart/cart_page.dart';
 import 'package:food_delivery_app/presentation/pages/home/home_page.dart';
 import 'package:food_delivery_app/presentation/pages/home/map/map_page.dart';
+import 'package:food_delivery_app/presentation/pages/login/auth_page.dart';
 import 'package:food_delivery_app/presentation/pages/login/enter_phone_page.dart';
 import 'package:food_delivery_app/presentation/pages/login/enter_pin_page.dart';
 import 'package:food_delivery_app/presentation/pages/login/information_page.dart';
@@ -16,8 +17,11 @@ import 'package:food_delivery_app/presentation/pages/profile/profile_page.dart';
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     AutoRoute<void>(
-      page: EnterPhonePage,
+      page: AuthPage,
       initial: true,
+    ),
+    AutoRoute<void>(
+      page: EnterPhonePage,
     ),
     AutoRoute<void>(page: EnterPinPage),
     AutoRoute<void>(page: InformationPage),

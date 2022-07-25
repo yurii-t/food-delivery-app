@@ -27,7 +27,7 @@ class AuthStatusBloc extends Bloc<AuthStatusEvent, AuthStatusState> {
       if (isSignIn) {
         final String uid = await firebaseRemoteDataSourceImpl
             .getCurrentUserUid(); //await getCurrentUserUidUseCase.call(NoParams());
-        emit(Authenticated(uid: uid));
+        emit(Authenticated(uid: uid, isRegistration: false));
       } else
         emit(UnAuthenticated());
     } on Exception catch (_) {
@@ -42,7 +42,7 @@ class AuthStatusBloc extends Bloc<AuthStatusEvent, AuthStatusState> {
     try {
       final String uid = await firebaseRemoteDataSourceImpl
           .getCurrentUserUid(); //await getCurrentUserUidUseCase.call(NoParams());
-      emit(Authenticated(uid: uid));
+      emit(Authenticated(uid: uid, isRegistration: event.isRegistration));
     } on Exception catch (_) {}
   }
 

@@ -13,13 +13,14 @@ class CurrentUser extends Equatable {
       required this.phoneNumber,
       required this.email});
 
-  factory CurrentUser.fromSnapShot(QueryDocumentSnapshot snap) {
+  factory CurrentUser.fromSnapShot(DocumentSnapshot snap) {
     final CurrentUser user = CurrentUser(
       userId: snap['userId'] as String,
       name: snap['name'] as String,
       phoneNumber: snap['phoneNumber'] as String,
       email: snap['email'] as String,
     );
+
     return user;
   }
   Map<String, Object> toDocument() {

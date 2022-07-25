@@ -9,6 +9,12 @@ abstract class AuthStatusEvent extends Equatable {
 
 class AuthStatusStarted extends AuthStatusEvent {}
 
-class AuthStatusLogedIn extends AuthStatusEvent {}
+class AuthStatusLogedIn extends AuthStatusEvent {
+  final bool isRegistration;
+
+  const AuthStatusLogedIn({required this.isRegistration});
+  @override
+  List<Object> get props => [isRegistration];
+}
 
 class AuthStatusLogedOut extends AuthStatusEvent {}

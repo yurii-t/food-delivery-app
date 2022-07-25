@@ -9,11 +9,14 @@ abstract class PhoneAuthEvent extends Equatable {
 
 class SendOtpToPhoneEvent extends PhoneAuthEvent {
   final String phoneNumber;
-
-  const SendOtpToPhoneEvent({required this.phoneNumber});
+  final bool isRegistration;
+  const SendOtpToPhoneEvent({
+    required this.phoneNumber,
+    required this.isRegistration,
+  });
 
   @override
-  List<Object> get props => [phoneNumber];
+  List<Object> get props => [phoneNumber, isRegistration];
 }
 
 class VerifySentOtpEvent extends PhoneAuthEvent {
@@ -55,3 +58,5 @@ class OnPhoneAuthVerificationCompleteEvent extends PhoneAuthEvent {
     required this.credential,
   });
 }
+
+class OnPhoneAuthGoogleSignIn extends PhoneAuthEvent {}
