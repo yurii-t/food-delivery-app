@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/presentation/blocs/user/bloc/user_bloc.dart';
+import 'package:food_delivery_app/presentation/widgets/get_out_bottom_sheet.dart';
 import 'package:food_delivery_app/routes/app_router.gr.dart';
 import 'package:food_delivery_app/theme/app_colors.dart';
 
 class InformationPage extends StatefulWidget {
-  InformationPage({Key? key}) : super(key: key);
+  const InformationPage({Key? key}) : super(key: key);
 
   @override
   State<InformationPage> createState() => _InformationPageState();
@@ -64,80 +65,27 @@ class _InformationPageState extends State<InformationPage> {
                     alignment: Alignment.topLeft,
                     child: GestureDetector(
                       onTap: () {
-                        showModalBottomSheet<Widget?>(
-                          useRootNavigator: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(24),
+                        if (nameController.text.isNotEmpty ||
+                            emailController.text.isNotEmpty) {
+                          showModalBottomSheet<Widget?>(
+                            useRootNavigator: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(24),
+                              ),
                             ),
-                          ),
-                          context: context,
-                          builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 40,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    ' Are you sure you want to get out?\nAll entered information will be lost',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 29,
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context.router.pop();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      side: BorderSide.none,
-                                      elevation: 0,
-                                      primary: AppColors.orange,
-                                      fixedSize: Size(
-                                        MediaQuery.of(context).size.width,
-                                        52,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        side: BorderSide.none,
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'Stay here',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {},
-                                    child: const Text(
-                                      'Get out',
-                                      style: TextStyle(
-                                        color: AppColors.grey,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                            context: context,
+                            builder: (context) {
+                              return GetoutBottomSheet(callback: () {
+                                nameController.clear();
+                                emailController.clear();
+                                context.router.popUntilRoot();
+                              });
+                            },
+                          );
+                        } else {
+                          context.router.pop();
+                        }
                       },
                       child: SvgPicture.asset(
                         'assets/icons/login_back_button.svg',
@@ -274,6 +222,7 @@ class _InformationPageState extends State<InformationPage> {
                         context.router
                             .replace(HomeRoute(userId: state.usersInfo.userId));
                       }
+                      // ignore: unnecessary_statements
                       null;
                     },
                     style: ElevatedButton.styleFrom(

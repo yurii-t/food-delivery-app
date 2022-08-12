@@ -32,6 +32,7 @@ dependencies:
   
   auto_route: ^4.0.1
   cloud_firestore: ^3.4.0
+  carousel_slider: ^4.0.0
   
   easy_localization: ^3.0.0
   equatable: ^2.0.3
@@ -41,7 +42,10 @@ dependencies:
   google_maps_flutter: ^2.1.8
   location: ^4.4.0
   google_sign_in: ^5.4.0
-  
+  sliding_up_panel: ^2.0.0+1
+  flutter_rating_bar: ^4.0.1
+  http: ^0.13.4
+  flutter_dotenv: ^5.0.2
   
   flutter_bloc: ^8.0.1
   bloc_concurrency: ^0.2.0 
@@ -49,7 +53,7 @@ dependencies:
   intl_phone_number_input: ^0.7.0+2
   pin_code_fields: ^7.4.0
   get_it: ^7.2.0
-  permission_handler: ^10.0.0  
+  # permission_handler: ^10.0.0  
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -83,6 +87,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/
     - assets/icons/
   #   - images/a_dot_ham.jpeg

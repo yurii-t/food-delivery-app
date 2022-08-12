@@ -41,7 +41,7 @@ class PhoneAuthBloc extends Bloc<PhoneAuthEvent, PhoneAuthState> {
                 email: user.user?.email ?? '',
               ),
             );
-            emit(PhoneAuthVerified(user.user!.uid));
+            emit(PhoneAuthVerified(user.user?.uid ?? ''));
           }
         });
       } on FirebaseAuthException catch (e) {
@@ -60,6 +60,7 @@ class PhoneAuthBloc extends Bloc<PhoneAuthEvent, PhoneAuthState> {
     try {
       final phoneNumberExists = await firebaseRemoteDataSourceImpl
           .phoneNumberExistsCheck(event.phoneNumber);
+      // if (!phoneNumberExists || !event.isRegistration) {
       if (phoneNumberExists == false || event.isRegistration == false) {
         await firebaseRemoteDataSourceImpl.verifyPhone(
           phoneNumber: event.phoneNumber,
@@ -114,14 +115,14 @@ class PhoneAuthBloc extends Bloc<PhoneAuthEvent, PhoneAuthState> {
           .then((user) {
         if (user.user != null) {
           firebaseRemoteDataSourceImpl.createCurrentUser(
-            CurrentUser(
+            const CurrentUser(
               userId: '',
               name: '',
               phoneNumber: '',
               email: '',
             ),
           );
-          emit(PhoneAuthVerified(user.user!.uid));
+          emit(PhoneAuthVerified(user.user?.uid ?? ''));
         }
       });
     } on FirebaseAuthException catch (e) {

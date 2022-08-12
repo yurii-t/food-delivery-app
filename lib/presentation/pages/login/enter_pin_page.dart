@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:food_delivery_app/presentation/blocs/auth_status/bloc/auth_status_bloc.dart';
 import 'package:food_delivery_app/presentation/blocs/login/bloc/phone_auth_bloc.dart';
-import 'package:food_delivery_app/routes/app_router.gr.dart';
+
 import 'package:food_delivery_app/theme/app_colors.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -28,10 +27,12 @@ class EnterPinPage extends StatefulWidget {
 class _EnterPinPageState extends State<EnterPinPage> {
   final TextEditingController _pinController = TextEditingController();
   int time = 60;
+  late Timer _timer;
 
   void startTimer() {
     const onsec = Duration(seconds: 1);
-    Timer _timer = Timer.periodic(onsec, (timer) {
+    // Timer _timer = Timer.periodic(onsec, (timer) {
+    _timer = Timer.periodic(onsec, (timer) {
       if (time == 0) {
         setState(() {
           timer.cancel();
@@ -51,9 +52,16 @@ class _EnterPinPageState extends State<EnterPinPage> {
   }
 
   @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String minutesStr = ((time / 60) % 60).floor().toString().padLeft(2, '0');
-    String secondsStr = (time % 60).floor().toString().padLeft(2, '0');
+    final String minutesStr =
+        ((time / 60) % 60).floor().toString().padLeft(2, '0');
+    final String secondsStr = (time % 60).floor().toString().padLeft(2, '0');
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -156,11 +164,11 @@ class _EnterPinPageState extends State<EnterPinPage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
+                        // ignore: unnecessary_statements
                         time == 0 ? _sendOtp() : null;
                       },
                       child: Text(
                         'Resend the code',
-                        //TODO: whe timer 00;00 color orange
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
                           color: time == 0 ? AppColors.orange : AppColors.grey,
@@ -170,7 +178,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                   ),
                   Text(
                     '$minutesStr:$secondsStr',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                     ),

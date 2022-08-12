@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:food_delivery_app/presentation/pages/categories/best_places_page.dart';
 import 'package:food_delivery_app/presentation/pages/categories/categories_page.dart';
+import 'package:food_delivery_app/presentation/pages/categories/selected_category_page.dart';
 import 'package:food_delivery_app/presentation/pages/favorites/favorites_page.dart';
 import 'package:food_delivery_app/presentation/pages/home/cafe/cafe_page.dart';
 import 'package:food_delivery_app/presentation/pages/home/cafe/menu_page.dart';
@@ -11,7 +13,7 @@ import 'package:food_delivery_app/presentation/pages/login/auth_page.dart';
 import 'package:food_delivery_app/presentation/pages/login/enter_phone_page.dart';
 import 'package:food_delivery_app/presentation/pages/login/enter_pin_page.dart';
 import 'package:food_delivery_app/presentation/pages/login/information_page.dart';
-import 'package:food_delivery_app/presentation/pages/profile/profile_page.dart';
+import 'package:food_delivery_app/presentation/pages/profile/profile.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
@@ -29,17 +31,6 @@ import 'package:food_delivery_app/presentation/pages/profile/profile_page.dart';
     AutoRoute<void>(page: CartPage),
     AutoRoute<void>(page: MenuPage),
     AutoRoute<void>(page: TimeSelectPage),
-    // AutoRoute<void>(
-    //   page: FilesNavigationPage,
-    //   children: [
-    //     AutoRoute<void>(
-    //       page: MediaPage,
-    //     ),
-    //     AutoRoute<void>(
-    //       page: FilesPage,
-    //     ),
-    //   ],
-    // ),
     AutoRoute<void>(
       page: HomePage,
       children: [
@@ -50,7 +41,26 @@ import 'package:food_delivery_app/presentation/pages/profile/profile_page.dart';
           page: CategoriesPage,
         ),
         AutoRoute<void>(page: FavoritesPage),
-        AutoRoute<void>(page: ProfilePage),
+        AutoRoute<void>(
+          path: 'profile',
+          name: 'ProfileRouter',
+          page: EmptyRouterPage,
+          children: [
+            AutoRoute<void>(path: '', page: ProfilePage),
+            AutoRoute<void>(page: ProfileSettingsCardPage),
+            AutoRoute<void>(page: ProfileSettingsPage),
+            AutoRoute<void>(page: SupportServicePage),
+            AutoRoute<void>(page: AboutApplicationPage),
+            AutoRoute<void>(
+              page: ProfileBookingPage,
+            ),
+            AutoRoute<void>(page: BookingDetailedPage),
+            AutoRoute<void>(page: AddNewCardPage),
+            AutoRoute<void>(page: SelectedCategoryPage),
+            AutoRoute<void>(page: BestPlacesPage),
+            RedirectRoute(path: '*', redirectTo: ''),
+          ],
+        ),
       ],
     ),
   ],

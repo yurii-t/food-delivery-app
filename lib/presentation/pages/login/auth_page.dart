@@ -1,3 +1,6 @@
+// ignore_for_file: avoid_bool_literals_in_conditional_expressions
+// ignore_for_file: no-boolean-literal-compare
+
 import 'dart:io' show Platform;
 
 import 'package:auto_route/auto_route.dart';
@@ -5,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/presentation/blocs/login/bloc/phone_auth_bloc.dart';
-import 'package:food_delivery_app/presentation/pages/login/enter_pin_page.dart';
+
 import 'package:food_delivery_app/routes/app_router.gr.dart';
 import 'package:food_delivery_app/theme/app_colors.dart';
 
@@ -129,11 +132,7 @@ class _AuthPageState extends State<AuthPage> {
                       ? _sendOtp
                       : null,
                   style: ElevatedButton.styleFrom(
-                    primary:
-                        // !numberLentghError &&
-                        //         _textEditingController.text.isNotEmpty
-                        AppColors.orange,
-                    // : Colors.transparent,
+                    primary: AppColors.orange,
                     fixedSize: Size(MediaQuery.of(context).size.width, 52),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -155,7 +154,7 @@ class _AuthPageState extends State<AuthPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () => null,
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
                             fixedSize:

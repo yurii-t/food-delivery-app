@@ -1,6 +1,8 @@
+// ignore_for_file: avoid-unused-parameters
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:food_delivery_app/data/datasource/firebase_remote_datasource.dart';
+
 import 'package:food_delivery_app/data/datasource/firebase_remote_datasource_impl.dart';
 
 part 'auth_status_event.dart';
@@ -21,12 +23,11 @@ class AuthStatusBloc extends Bloc<AuthStatusEvent, AuthStatusState> {
     Emitter<AuthStatusState> emit,
   ) async {
     try {
-      // final bool isSignIn = await isSignInUseCase.call(NoParams());
       final bool isSignIn = await firebaseRemoteDataSourceImpl.isSignIn();
 
       if (isSignIn) {
-        final String uid = await firebaseRemoteDataSourceImpl
-            .getCurrentUserUid(); //await getCurrentUserUidUseCase.call(NoParams());
+        final String uid =
+            await firebaseRemoteDataSourceImpl.getCurrentUserUid();
         emit(Authenticated(uid: uid, isRegistration: false));
       } else
         emit(UnAuthenticated());
@@ -40,8 +41,7 @@ class AuthStatusBloc extends Bloc<AuthStatusEvent, AuthStatusState> {
     Emitter<AuthStatusState> emit,
   ) async {
     try {
-      final String uid = await firebaseRemoteDataSourceImpl
-          .getCurrentUserUid(); //await getCurrentUserUidUseCase.call(NoParams());
+      final String uid = await firebaseRemoteDataSourceImpl.getCurrentUserUid();
       emit(Authenticated(uid: uid, isRegistration: event.isRegistration));
     } on Exception catch (_) {}
   }
@@ -51,7 +51,6 @@ class AuthStatusBloc extends Bloc<AuthStatusEvent, AuthStatusState> {
     Emitter<AuthStatusState> emit,
   ) async {
     try {
-      // await signOutUseCase.call(NoParams());
       await firebaseRemoteDataSourceImpl.signOut();
       emit(UnAuthenticated());
     } on Exception catch (_) {}

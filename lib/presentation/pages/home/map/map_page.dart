@@ -1,10 +1,26 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:auto_route/auto_route.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/data/datasource/firebase_remote_datasource_impl.dart';
+import 'package:food_delivery_app/data/models/restaurant.dart';
+import 'package:food_delivery_app/data/models/restaurant_category.dart';
+import 'package:food_delivery_app/presentation/blocs/bottombar/bloc/bottombar_bloc.dart';
+import 'package:food_delivery_app/presentation/blocs/location/bloc/location_bloc.dart';
+import 'package:food_delivery_app/presentation/pages/home/map/widgets/location_search_box.dart';
+import 'package:food_delivery_app/presentation/pages/home/map/widgets/name_search_box.dart';
+import 'package:food_delivery_app/presentation/pages/home/map/widgets/share_location_dialog.dart';
+import 'package:food_delivery_app/routes/app_router.gr.dart';
 import 'package:food_delivery_app/theme/app_colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -14,433 +30,373 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  final Completer<GoogleMapController> _mapController = Completer();
-  int _selectedTab = 0;
+  double _fabHeight = 10;
+  double _panelHeightClosed = 0;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  PanelController panelController = PanelController();
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
-  bool openBox = false;
+  BitmapDescriptor? customMarker;
+  BitmapDescriptor? unselectdMarker; //= BitmapDescriptor.defaultMarker;
+  BitmapDescriptor? currentLocationMarker;
+
+  FirebaseRemoteDataSourceImpl fire = FirebaseRemoteDataSourceImpl();
+  Restaurant? choosedRestaurant;
+
+  @override
+  void initState() {
+    getBytesFromAsset('assets/cafe.png', 50).then((onValue) {
+      customMarker = BitmapDescriptor.fromBytes(onValue);
+    });
+    getBytesFromAsset('assets/current_loaction.png', 100).then((onValue) {
+      currentLocationMarker = BitmapDescriptor.fromBytes(onValue);
+    });
+    getBytesFromAsset('assets/cafe_off.png', 50).then((onValue) {
+      unselectdMarker = BitmapDescriptor.fromBytes(onValue);
+    });
+
+    super.initState();
+  }
+
+  static Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    final ByteData data = await rootBundle.load(path);
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetWidth: width,
+    );
+    final ui.FrameInfo fi = await codec.getNextFrame();
+
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final double _panelHeightOpen = MediaQuery.of(context).size.height * 0.58;
+
     return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (controller) {
-              _mapController.complete(controller);
-            },
-          ),
-          Column(
-            children: [
-              GestureDetector(
+      body: BlocBuilder<LocationBloc, LocationState>(
+        builder: (context, state) {
+          if (state is LocationLoading) {
+            return const Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (state is LocationPermissionDenied) {
+            showDialog<Dialog>(
+              context: context,
+              builder: (context) => const ShareLocationDialog(),
+            );
+          }
+          if (state is LocationLoaded) {
+            final Marker currentMarker = Marker(
+              markerId: const MarkerId('user_location'),
+              rotation: state.locationData?.heading ?? 0,
+              icon: currentLocationMarker!,
+              // position: LatLng(state.place.lat, state.place.lon),
+              position: LatLng(
+                state.locationData?.latitude ?? state.place.lat,
+                state.locationData?.longitude ?? state.place.lon,
+              ),
+              anchor: const Offset(0.5, 0.5),
+            );
+
+            final Set<Marker> markers = state.restaurants.map((restaurant) {
+              return Marker(
+                markerId: MarkerId(restaurant.id),
+                icon: state.selectedRestaurant?.id == restaurant.id
+                    ? customMarker!
+                    : state.selectedRestaurant?.id == null
+                        ? customMarker!
+                        : unselectdMarker!,
+                position: LatLng(
+                  restaurant.location.latitude,
+                  restaurant.location.longitude,
+                ),
                 onTap: () {
-                  showModalBottomSheet<Widget?>(
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(24),
-                      ),
+                  context
+                      .read<BottombarBloc>()
+                      .add(const HideBottomBar(hide: true));
+
+                  context
+                      .read<LocationBloc>()
+                      .add(SelectMarkerRestaurant(restaurant));
+
+                  choosedRestaurant = state.restaurants
+                      .firstWhere((element) => element.id == restaurant.id);
+
+                  panelController.open();
+                },
+              );
+            }).toSet()
+              ..add(currentMarker);
+
+            return Stack(
+              children: [
+                GoogleMap(
+                  markers: markers,
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      state.place.lat,
+                      state.place.lon,
                     ),
-                    context: context,
-                    builder: (context) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.95,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
+                  ),
+                  onMapCreated: (controller) {
+                    context
+                        .read<LocationBloc>()
+                        .add(LoadMap(controller: controller));
+                  },
+                ),
+                Column(
+                  children: [
+                    NameSearchBox(restaurantsList: state.restaurants),
+                    const LocationSearchBox(),
+                  ],
+                ),
+                SlidingUpPanel(
+                  onPanelClosed: () {
+                    context.read<BottombarBloc>().add(const HideBottomBar());
+                    context
+                        .read<LocationBloc>()
+                        .add(const SelectMarkerRestaurant(null));
+                  },
+                  controller: panelController,
+                  maxHeight: _panelHeightOpen,
+                  minHeight: _panelHeightClosed,
+                  parallaxEnabled: true,
+                  parallaxOffset: 0.5,
+
+                  panelBuilder: (sc) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 80,
+                          child: Divider(
+                            thickness: 4,
+                          ),
                         ),
-                        child: Column(
-                          // mainAxisSize: MainAxisSize.max,
-                          // crossAxisAlignment: CrossAxisAlignment.start,
+                        Container(
+                          margin: const EdgeInsets.only(top: 8, bottom: 16),
+                          height: 130,
+                          width: MediaQuery.of(context).size.width,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            color: Colors.amberAccent,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: choosedRestaurant?.image != null
+                              ? Image.network(
+                                  choosedRestaurant?.image ?? '',
+                                  fit: BoxFit.cover,
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                        Row(
                           children: [
-                            const SizedBox(
-                              width: 80,
-                              child: Divider(
-                                thickness: 4,
-                              ),
-                            ),
-                            TextField(
-                              onChanged: (value) => value,
-                              textAlignVertical: TextAlignVertical.bottom,
-                              decoration: InputDecoration(
-                                contentPadding:
-                                    const EdgeInsets.only(bottom: 19),
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                prefixIconConstraints: const BoxConstraints(
-                                    maxHeight: 30, minWidth: 30),
-                                prefixIcon: SvgPicture.asset(
-                                  'assets/icons/search.svg',
-                                ),
-                                hintText: 'Search by name',
-                                hintStyle:
-                                    const TextStyle(color: AppColors.grey),
-                                suffixIcon: const Icon(
-                                  Icons.clear,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              // width: 80,
-                              child: Divider(
-                                thickness: 2,
-                                color: AppColors.lightGrey,
-                              ),
-                            ),
                             Expanded(
-                              child: ListView.separated(
-                                itemCount: 7,
-                                separatorBuilder: (context, index) =>
-                                    const Divider(
-                                  thickness: 2,
-                                  color: AppColors.lightGrey,
+                              child: Text(
+                                choosedRestaurant?.name ?? 'Loading...',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                itemBuilder: (context, index) {
-                                  return const ListTile(
-                                    minLeadingWidth: 15,
-                                    leading: Icon(Icons.watch_later_outlined),
-                                    title: Text(
-                                      'Cafe Sante (Bar - Restaurant)',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    subtitle: Text(
-                                      '15 Shortmarket St, Cape Tow',
-                                      style: TextStyle(
-                                          color: AppColors.grey,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  );
-                                },
                               ),
+                            ),
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/star.svg',
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  // '4.7',
+                                  choosedRestaurant?.rating.toString() ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 12,
-                  ),
-                  margin: const EdgeInsets.only(left: 16, right: 16, top: 30),
-                  width: MediaQuery.of(context).size.width, //375,
-                  height: 48,
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/qpay.svg',
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                          left: 12,
-                          right: 12,
+                        Text(
+                          // 'Food in the restaurant. Takeaway food. No delivery',
+                          choosedRestaurant?.options ?? 'Loading...',
+                          style: const TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                        width: 1,
-                        color: AppColors.lightGrey,
-                      ),
-                      Expanded(
-                        child: Row(
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        Row(
                           children: [
                             SvgPicture.asset(
-                              'assets/icons/search.svg',
+                              'assets/icons/location_marker.svg',
                             ),
                             const SizedBox(
-                              width: 8,
+                              width: 14,
                             ),
-                            const Text(
-                              'Search by name',
-                              style: TextStyle(color: AppColors.grey),
-                            ),
-                          ],
-                        ),
-                        // TextField(
-                        //   onChanged: (value) => value,
-                        //   textAlignVertical: TextAlignVertical.bottom,
-                        //   decoration: InputDecoration(
-                        //     contentPadding: const EdgeInsets.only(bottom: 19),
-                        //     filled: true,
-                        //     fillColor: Colors.white,
-                        //     border: OutlineInputBorder(
-                        //       borderSide: BorderSide.none,
-                        //       borderRadius: BorderRadius.circular(12),
-                        //     ),
-                        //     prefixIconConstraints:
-                        //         const BoxConstraints(maxHeight: 30, minWidth: 30),
-                        //     prefixIcon: SvgPicture.asset(
-                        //       'assets/icons/search.svg',
-                        //     ),
-                        //     hintText: 'Search by name',
-                        //     hintStyle: const TextStyle(color: AppColors.grey),
-                        //   ),
-                        // ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              /////
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet<Widget?>(
-                    isScrollControlled: true,
-                    useRootNavigator: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(24),
-                      ),
-                    ),
-                    context: context,
-                    builder: (context) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              width: 80,
-                              child: Divider(
-                                thickness: 4,
-                              ),
-                            ),
-                            Container(
-                              // padding: const EdgeInsets.only(
-                              //   left: 12,
-                              // ),
-                              // margin: const EdgeInsets.only(
-                              //     left: 16, right: 16, top: 30),
-                              width: MediaQuery.of(context).size.width, //375,
-                              height: 48,
-                              color: Colors.white,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      onChanged: (value) => value,
-                                      textAlignVertical:
-                                          TextAlignVertical.bottom,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        border: OutlineInputBorder(
-                                          borderSide: BorderSide.none,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        prefixIconConstraints:
-                                            const BoxConstraints(
-                                          maxHeight: 30,
-                                          minWidth: 30,
-                                        ),
-                                        prefixIcon: SvgPicture.asset(
-                                          'assets/icons/search.svg',
-                                        ),
-                                        hintText: 'Your location',
-                                        hintStyle: const TextStyle(
-                                          color: AppColors.grey,
-                                        ),
-                                        suffixIcon: const Icon(Icons.clear),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                      right: 12,
-                                      left: 12,
-                                      bottom: 2,
-                                    ),
-                                    width: 1,
-                                    color: AppColors.lightGrey,
-                                  ),
-                                  const Text('Map'),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              // width: 80,
-                              child: Divider(
-                                thickness: 2,
-                                color: AppColors.lightGrey,
-                              ),
-                            ),
-                            Expanded(
-                              child: ListView.separated(
-                                itemCount: 7,
-                                separatorBuilder: (context, index) =>
-                                    const Divider(
-                                  thickness: 2,
-                                  color: AppColors.lightGrey,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {
-                                      setState(() {
-                                        showModalBottomSheet<Widget?>(
-                                            // isScrollControlled: true,
-                                            // useRootNavigator: true,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                top: Radius.circular(24),
-                                              ),
-                                            ),
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                height: 100,
-                                                color: Colors.red,
-                                              );
-                                            });
-                                      });
-                                    },
-                                    minLeadingWidth: 15,
-                                    leading:
-                                        const Icon(Icons.watch_later_outlined),
-                                    title: const Text(
-                                      'Cafe Sante (Bar - Restaurant)',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    subtitle: const Text(
-                                      '15 Shortmarket St, Cape Tow',
-                                      style: TextStyle(
-                                        color: AppColors.grey,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                  ),
-                  margin: const EdgeInsets.only(left: 16, right: 16, top: 8),
-                  // width: MediaQuery.of(context).size.width, //375,
-                  height: 32,
-
-                  decoration: BoxDecoration(
-                    color: AppColors.darkBlue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/compass.svg',
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      const Text(
-                        'Choose your location',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 60,
-              child: ListView.builder(
-                itemCount: 10,
-                // itemExtent: 98,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (
-                  context,
-                  index,
-                ) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedTab = index;
-                      });
-                    },
-                    child: Container(
-                      margin:
-                          const EdgeInsets.only(right: 8, left: 8, bottom: 16),
-                      height: 26,
-                      padding: const EdgeInsets.only(
-                        left: 12,
-                        right: 12,
-                        top: 4,
-                        bottom: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _selectedTab == index
-                            ? AppColors.orange
-                            : Colors.white,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                      child: Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('🍕'),
-                            const Text(
-                              'Pizza',
-                              style: TextStyle(
+                            Text(
+                              // '213 Bree St, Cape Town City Centre',
+                              choosedRestaurant?.address ?? 'Loading...',
+                              style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 13,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
                         ),
-                      ),
+                        const SizedBox(
+                          height: 22,
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/clock.svg',
+                            ),
+                            const SizedBox(
+                              width: 14,
+                            ),
+                            Text(
+                              // '12:00 am - 09:30 pm',
+                              choosedRestaurant?.workingTime ?? 'Loading...',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 24,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.router
+                                .push(CafeRoute(restaurant: choosedRestaurant));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: AppColors.orange,
+                            fixedSize:
+                                Size(MediaQuery.of(context).size.width, 52),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text('View'),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
+                  ),
+                  // defaultPanelState: panelState,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                  ),
+                  onPanelSlide: (pos) => setState(() {
+                    _fabHeight =
+                        pos * (_panelHeightOpen - _panelHeightClosed) + 10;
+                  }),
+                ),
+                Positioned(
+                  bottom: _fabHeight, //10,
+                  child: SizedBox(
+                    height: 60,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      shrinkWrap: false,
+                      itemCount: state.restaurantCategories.length,
+                      // itemExtent: 98,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (
+                        context,
+                        index,
+                      ) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (state.selectedCategory ==
+                                state.restaurantCategories[index]) {
+                              context.read<LocationBloc>().add(
+                                    const SelectRestaurantsCategory(
+                                      RestaurantCategory(
+                                        categoryName: '',
+                                        categoryNameIcon: '',
+                                      ),
+                                    ),
+                                  );
+                            } else {
+                              context.read<LocationBloc>().add(
+                                    SelectRestaurantsCategory(
+                                      state.restaurantCategories[index],
+                                    ),
+                                  );
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                              right: 8,
+                              left: 8,
+                              bottom: 16,
+                            ),
+                            height: 26,
+                            padding: const EdgeInsets.only(
+                              left: 12,
+                              right: 12,
+                              top: 4,
+                              bottom: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: state.selectedCategory ==
+                                      state.restaurantCategories[index]
+                                  ? AppColors.orange
+                                  : Colors.white,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(12),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                state.restaurantCategories[index]
+                                    .categoryNameIcon,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

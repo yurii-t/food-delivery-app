@@ -30,15 +30,12 @@ class PhoneAuthVerified extends PhoneAuthState {
 
 class PhoneAuthCodeSentSuccess extends PhoneAuthState {
   final String verificationId;
-  // final int time;
+
   const PhoneAuthCodeSentSuccess({
     required this.verificationId,
-    // required this.time,
   });
   @override
-  List<Object> get props => [
-        // verificationId
-      ];
+  List<Object> get props => [];
 }
 
 class PhoneAuthPhoneNumberExist extends PhoneAuthState {}

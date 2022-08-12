@@ -1,3 +1,6 @@
+// ignore_for_file: avoid_bool_literals_in_conditional_expressions
+// ignore_for_file: no-boolean-literal-compare
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,9 +105,6 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                           ),
                         ),
                       ),
-                      // const SizedBox(
-                      //   height: 16,
-                      // ),
                     ],
                   ),
                 );
@@ -231,10 +231,6 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                           TextSpan(
                             text: 'User Agreement',
                             style: TextStyle(
-                              // shadows: [
-                              //   Shadow(
-                              //       color: Colors.white, offset: Offset(0, -5)),
-                              // ],
                               color: !isCheckedUserAgreement &&
                                       _textEditingController.text.isNotEmpty
                                   ? Colors.red
@@ -346,7 +342,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () => null,
                         style: ElevatedButton.styleFrom(
                           primary: Colors.white,
                           fixedSize:
