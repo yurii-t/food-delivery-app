@@ -46,10 +46,7 @@ class OrderListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  // 'Grilled Prawn',
                   dish.dishName,
-                  // g.dishName,
-
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 14,

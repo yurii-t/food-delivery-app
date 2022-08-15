@@ -55,7 +55,7 @@ class _LocationSearchBoxState extends State<LocationSearchBox> {
                           ),
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width, //375,
+                          width: MediaQuery.of(context).size.width,
                           height: 48,
                           color: Colors.white,
                           child: Row(
@@ -104,7 +104,6 @@ class _LocationSearchBoxState extends State<LocationSearchBox> {
                           ),
                         ),
                         const SizedBox(
-                          // width: 80,
                           child: Divider(
                             thickness: 2,
                             color: AppColors.lightGrey,
@@ -133,7 +132,6 @@ class _LocationSearchBoxState extends State<LocationSearchBox> {
                                 minLeadingWidth: 15,
                                 leading: const Icon(Icons.watch_later_outlined),
                                 title: Text(
-                                  // 'Cafe Sante (Bar - Restaurant)',
                                   searchItem.description,
                                   style: const TextStyle(
                                     color: Colors.black,
@@ -158,7 +156,6 @@ class _LocationSearchBoxState extends State<LocationSearchBox> {
                   );
                 }
 
-                // return const SizedBox.shrink();
                 return const Center(
                   child: SizedBox.square(
                     dimension: 24,
@@ -176,9 +173,7 @@ class _LocationSearchBoxState extends State<LocationSearchBox> {
           right: 16,
         ),
         margin: const EdgeInsets.only(left: 16, right: 16, top: 8),
-        // width: MediaQuery.of(context).size.width, //375,
         height: 32,
-
         decoration: BoxDecoration(
           color: AppColors.darkBlue,
           borderRadius: BorderRadius.circular(8),

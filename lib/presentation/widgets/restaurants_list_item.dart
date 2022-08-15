@@ -33,7 +33,7 @@ class RestaurantsListItem extends StatelessWidget {
         Stack(
           children: [
             Container(
-              height: imageHeight, //138, //imageHeight, //96,
+              height: imageHeight,
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(12),
@@ -80,39 +80,53 @@ class RestaurantsListItem extends StatelessWidget {
                 ),
               )
             else
-              ClipRRect(
-                clipBehavior: Clip.hardEdge,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 10,
-                    sigmaY: 10,
-                  ),
-                  child: Container(
-                    // width: 44,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: SizedBox(
+                  height: 25,
+                  width: 44,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Stack(
                       children: [
-                        SvgPicture.asset(
-                          'assets/icons/star.svg',
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          '${restaurant.rating}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 10,
+                        Positioned.fill(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 5,
+                              sigmaY: 5,
+                            ),
+                            child: Container(
+                              height: 25,
+                              width: 44,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/star.svg',
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    '${restaurant.rating}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -156,7 +170,7 @@ class RestaurantsListItem extends StatelessWidget {
                     '${restaurant.rating}',
                     style: TextStyle(
                       color: AppColors.grey,
-                      fontSize: subtitleSize, //10,
+                      fontSize: subtitleSize,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

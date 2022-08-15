@@ -34,7 +34,6 @@ class ProfileBookingPage extends StatelessWidget {
             const Text(
               'My booking',
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -44,7 +43,7 @@ class ProfileBookingPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: bookings.length, //5,
+                itemCount: bookings.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -58,6 +57,7 @@ class ProfileBookingPage extends StatelessWidget {
                         subTitleSize: 12,
                         enableIcons: true,
                         statusTextSize: 12,
+                        isDetailedBooking: false,
                       ),
                     ),
                   );

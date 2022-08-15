@@ -123,7 +123,6 @@ class _CartPageState extends State<CartPage> {
                             width: 8,
                           ),
                           Text(
-                            // '25.07.2022',DateFormat('HH:mm').format(hour),
                             DateFormat('dd.MM.yyyy')
                                 .format(widget.bookedTime.toDate()),
                             style: const TextStyle(
@@ -143,7 +142,6 @@ class _CartPageState extends State<CartPage> {
                             width: 8,
                           ),
                           Text(
-                            // '4:30',
                             DateFormat('HH:mm')
                                 .format(widget.bookedTime.toDate()),
                             style: const TextStyle(
@@ -163,7 +161,6 @@ class _CartPageState extends State<CartPage> {
                             width: 8,
                           ),
                           Text(
-                            // '2',
                             widget.numberofGuests.toString(),
                             style: const TextStyle(
                               color: Colors.black,
@@ -188,7 +185,7 @@ class _CartPageState extends State<CartPage> {
                       itemCount: state.order
                           .itemQuantity(state.order.dishes)
                           .keys
-                          .length, //dishes.length,
+                          .length,
                       itemBuilder: (context, index) {
                         final int itemQuantity = state.order
                             .itemQuantity(state.order.dishes)
@@ -360,19 +357,20 @@ class _CartPageState extends State<CartPage> {
                                 quantity: e.value as int,
                               ))
                           .toList();
+                      final booking = Booking(
+                        id: RandomString.getRandomString(),
+                        dishes: dishes,
+                        restaurantImage: widget.restaurantImage,
+                        restaurantName: widget.restaurantName,
+                        status: 'Confirmed',
+                        totalPrice: state.order.totalPrice,
+                        paymentMethod: paymentMethod,
+                        bookedTime: widget.bookedTime,
+                        numberofGuests: widget.numberofGuests,
+                      );
 
                       context.read<OrderBloc>().add(AddBookingToFirebase(
-                            Booking(
-                              id: RandomString.getRandomString(),
-                              dishes: dishes,
-                              restaurantImage: widget.restaurantImage,
-                              restaurantName: widget.restaurantName,
-                              status: 'Confirmed',
-                              totalPrice: state.order.totalPrice,
-                              paymentMethod: paymentMethod,
-                              bookedTime: widget.bookedTime,
-                              numberofGuests: widget.numberofGuests,
-                            ),
+                            booking,
                           ));
                       showModalBottomSheet<Widget?>(
                         useRootNavigator: true,
@@ -385,6 +383,7 @@ class _CartPageState extends State<CartPage> {
                         builder: (context) {
                           return BookedBottomSheet(
                             restaurantId: widget.restaurantId,
+                            booking: booking,
                           );
                         },
                       );

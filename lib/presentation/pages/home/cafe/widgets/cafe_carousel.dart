@@ -47,7 +47,6 @@ class Cafe_CarouselState extends State<CafeCarousel> {
           },
         ),
         Positioned(
-          // top: 75,
           bottom: 10,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

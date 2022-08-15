@@ -29,11 +29,8 @@ class _SupportServicePageState extends State<SupportServicePage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.lightGrey,
       body: Padding(
-        padding:
-            // const EdgeInsets.all(0),
-            const EdgeInsets.only(left: 16, right: 16, top: 36),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 36),
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Align(
               alignment: Alignment.topLeft,
@@ -51,7 +48,6 @@ class _SupportServicePageState extends State<SupportServicePage> {
             const Text(
               'Support Service',
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -63,7 +59,6 @@ class _SupportServicePageState extends State<SupportServicePage> {
               'If you have any questions, the Qpay\ninformation and reference service is always ready to help. Write to us!',
               textAlign: TextAlign.start,
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -75,7 +70,6 @@ class _SupportServicePageState extends State<SupportServicePage> {
               controller: emailController,
               decoration: const InputDecoration(
                 labelText: 'Email',
-                // hintText: 'MasterCard xxxx 1111',
                 hintStyle: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -97,7 +91,6 @@ class _SupportServicePageState extends State<SupportServicePage> {
               controller: messageController,
               decoration: const InputDecoration(
                 labelText: ' Your comments',
-                // hintText: 'MasterCard xxxx 1111',
                 hintStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
                 labelStyle: TextStyle(color: AppColors.grey),

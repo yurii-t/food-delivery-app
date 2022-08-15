@@ -50,7 +50,6 @@ class _AddNewCardPageState extends State<AddNewCardPage> {
             const Text(
               'Add a new card',
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -63,7 +62,6 @@ class _AddNewCardPageState extends State<AddNewCardPage> {
               style: const TextStyle(),
               decoration: const InputDecoration(
                 labelText: 'Number',
-                // hintText: 'MasterCard xxxx 1111',
                 hintStyle: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -89,7 +87,6 @@ class _AddNewCardPageState extends State<AddNewCardPage> {
                     style: const TextStyle(),
                     decoration: const InputDecoration(
                       labelText: 'Valid until',
-                      // hintText: 'MasterCard xxxx 1111',
                       hintStyle: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -114,7 +111,6 @@ class _AddNewCardPageState extends State<AddNewCardPage> {
                     style: const TextStyle(),
                     decoration: const InputDecoration(
                       labelText: 'CVV',
-                      // hintText: 'MasterCard xxxx 1111',
                       hintStyle: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,

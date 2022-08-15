@@ -18,7 +18,6 @@ class HomePage extends StatelessWidget {
         MapRoute(),
         CategoriesRoute(),
         FavoritesRoute(),
-        // ProfileRoute(),
         ProfileRouter(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {

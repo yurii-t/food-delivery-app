@@ -36,7 +36,7 @@ class _MapPageState extends State<MapPage> {
   PanelController panelController = PanelController();
 
   BitmapDescriptor? customMarker;
-  BitmapDescriptor? unselectdMarker; //= BitmapDescriptor.defaultMarker;
+  BitmapDescriptor? unselectdMarker;
   BitmapDescriptor? currentLocationMarker;
 
   FirebaseRemoteDataSourceImpl fire = FirebaseRemoteDataSourceImpl();
@@ -87,17 +87,18 @@ class _MapPageState extends State<MapPage> {
             );
           }
           if (state is LocationPermissionDenied) {
-            showDialog<Dialog>(
-              context: context,
-              builder: (context) => const ShareLocationDialog(),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showDialog<Dialog>(
+                context: context,
+                builder: (context) => const ShareLocationDialog(),
+              );
+            });
           }
           if (state is LocationLoaded) {
             final Marker currentMarker = Marker(
               markerId: const MarkerId('user_location'),
               rotation: state.locationData?.heading ?? 0,
               icon: currentLocationMarker!,
-              // position: LatLng(state.place.lat, state.place.lon),
               position: LatLng(
                 state.locationData?.latitude ?? state.place.lat,
                 state.locationData?.longitude ?? state.place.lon,
@@ -170,7 +171,6 @@ class _MapPageState extends State<MapPage> {
                   minHeight: _panelHeightClosed,
                   parallaxEnabled: true,
                   parallaxOffset: 0.5,
-
                   panelBuilder: (sc) => Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -222,7 +222,6 @@ class _MapPageState extends State<MapPage> {
                                   width: 4,
                                 ),
                                 Text(
-                                  // '4.7',
                                   choosedRestaurant?.rating.toString() ?? '',
                                   style: const TextStyle(
                                     color: Colors.black,
@@ -235,7 +234,6 @@ class _MapPageState extends State<MapPage> {
                           ],
                         ),
                         Text(
-                          // 'Food in the restaurant. Takeaway food. No delivery',
                           choosedRestaurant?.options ?? 'Loading...',
                           style: const TextStyle(
                             color: AppColors.grey,
@@ -255,7 +253,6 @@ class _MapPageState extends State<MapPage> {
                               width: 14,
                             ),
                             Text(
-                              // '213 Bree St, Cape Town City Centre',
                               choosedRestaurant?.address ?? 'Loading...',
                               style: const TextStyle(
                                 color: Colors.black,
@@ -277,7 +274,6 @@ class _MapPageState extends State<MapPage> {
                               width: 14,
                             ),
                             Text(
-                              // '12:00 am - 09:30 pm',
                               choosedRestaurant?.workingTime ?? 'Loading...',
                               style: const TextStyle(
                                 color: Colors.black,
@@ -308,7 +304,6 @@ class _MapPageState extends State<MapPage> {
                       ],
                     ),
                   ),
-                  // defaultPanelState: panelState,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(18),
                     topRight: Radius.circular(18),
@@ -319,14 +314,13 @@ class _MapPageState extends State<MapPage> {
                   }),
                 ),
                 Positioned(
-                  bottom: _fabHeight, //10,
+                  bottom: _fabHeight,
                   child: SizedBox(
                     height: 60,
                     width: MediaQuery.of(context).size.width,
                     child: ListView.builder(
                       shrinkWrap: false,
                       itemCount: state.restaurantCategories.length,
-                      // itemExtent: 98,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (
                         context,

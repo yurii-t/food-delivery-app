@@ -57,7 +57,7 @@ class _AuthPageState extends State<AuthPage> {
               right: 16,
               left: 16,
               top: 120,
-            ), // bottom: 48),
+            ),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             decoration: const BoxDecoration(

@@ -160,6 +160,7 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .collection('users')
         .doc(uid)
         .collection('orders')
+        .orderBy('bookedTime', descending: true)
         .snapshots();
 
     return userCollectionRef

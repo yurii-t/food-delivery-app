@@ -23,7 +23,6 @@ class _MenuGridItemState extends State<MenuGridItem> {
 
   @override
   Widget build(BuildContext context) {
-    // var a = s;
     return GestureDetector(
       onTap: () {
         showModalBottomSheet<Widget?>(
@@ -45,7 +44,6 @@ class _MenuGridItemState extends State<MenuGridItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            // alignment: Alignment.center,
             height: 100,
             decoration: BoxDecoration(
               color: Colors.amber,
@@ -62,7 +60,6 @@ class _MenuGridItemState extends State<MenuGridItem> {
             height: 8,
           ),
           Text(
-            // 'Grilled Prawn',
             widget.menuItem.dishName,
             style: const TextStyle(
               fontSize: 12,
@@ -73,7 +70,6 @@ class _MenuGridItemState extends State<MenuGridItem> {
             height: 4,
           ),
           Text(
-            // 'Grilled King Prawn, Couscous, Prawn Bisque',
             widget.menuItem.dishIngredients,
             style: const TextStyle(
               color: AppColors.grey,
@@ -101,9 +97,12 @@ class _MenuGridItemState extends State<MenuGridItem> {
                       return GestureDetector(
                         onTap: () {
                           if (state.order.dishes.contains(widget.menuItem)) {
-                            context
-                                .read<OrderBloc>()
-                                .add(RemoveDish(widget.menuItem));
+                            // context
+                            //     .read<OrderBloc>()
+                            //     .add(RemoveDish(widget.menuItem));
+                            context.read<OrderBloc>().add(
+                                  RemoveAllDishes(widget.menuItem),
+                                );
                           } else {
                             context
                                 .read<OrderBloc>()

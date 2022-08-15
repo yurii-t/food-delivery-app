@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/data/models/booking.dart';
+import 'package:food_delivery_app/presentation/pages/profile/widgets/booking_list_item.dart';
 import 'package:food_delivery_app/presentation/pages/profile/widgets/booking_order_bottom_sheet.dart';
 import 'package:food_delivery_app/presentation/pages/profile/widgets/cancel_booking_bottom_sheet.dart';
 import 'package:food_delivery_app/presentation/widgets/dash_separator.dart';
@@ -36,10 +37,8 @@ class BookingDetailedPage extends StatelessWidget {
               height: 20,
             ),
             Text(
-              // 'SeaBreeze Fish & Shell',
               booking.restaurantName ?? 'Loading...',
               style: const TextStyle(
-                // color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -47,47 +46,54 @@ class BookingDetailedPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Stack(
-              children: [
-                Container(
-                  height: 206, //96,
-                  decoration: BoxDecoration(
-                    // color: Colors.amber,
-                    borderRadius: BorderRadius.circular(24),
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        booking.restaurantImage ?? '',
-                      ),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    booking.status ?? 'Loading...',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14, // 10,
-                    ),
-                  ),
-                ),
-              ],
+            BookingListItem(
+              booking: booking,
+              imageHeight: 206,
+              titleSize: 0,
+              subTitleSize: 0,
+              enableIcons: false,
+              statusTextSize: 14,
+              isDetailedBooking: true,
             ),
+            // Stack(
+            //   children: [
+            //     Container(
+            //       height: 206,
+            //       decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(24),
+            //         image: DecorationImage(
+            //           image: NetworkImage(
+            //             booking.restaurantImage ?? '',
+            //           ),
+            //           fit: BoxFit.fill,
+            //         ),
+            //       ),
+            //     ),
+            //     Container(
+            //       padding:
+            //           const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            //       margin: const EdgeInsets.all(10),
+            //       decoration: BoxDecoration(
+            //         color: Colors.green,
+            //         borderRadius: BorderRadius.circular(6),
+            //       ),
+            //       child: Text(
+            //         booking.status ?? 'Loading...',
+            //         style: const TextStyle(
+            //           color: Colors.white,
+            //           fontWeight: FontWeight.w600,
+            //           fontSize: 14,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             const SizedBox(
               height: 20,
             ),
             const Text(
               'Booking number - №12',
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
@@ -111,7 +117,6 @@ class BookingDetailedPage extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      // '12.08.2022',
                       DateFormat('dd.MM.yyyy')
                           .format(booking.bookedTime?.toDate() ?? DateTime(0)),
                       style: const TextStyle(
@@ -130,7 +135,6 @@ class BookingDetailedPage extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      // '04:30',
                       DateFormat('HH:mm').format(booking.bookedTime?.toDate() ??
                           DateTime(
                             0,
@@ -199,8 +203,6 @@ class BookingDetailedPage extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.only(
                     right: 34,
-                    // left: 12,
-                    // bottom: 2,
                   ),
                   width: 1,
                   height: 48,
@@ -243,7 +245,6 @@ class BookingDetailedPage extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Your comments',
                 focusColor: Colors.white,
-                // labelStyle: TextStyle(color: Colors.white),
                 floatingLabelBehavior: FloatingLabelBehavior.auto,
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: AppColors.grey, width: 2),

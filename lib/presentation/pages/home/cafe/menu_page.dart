@@ -91,7 +91,6 @@ class _MenuPageState extends State<MenuPage> {
                         height: 60,
                         child: ListView.builder(
                           itemCount: state.categoryList.length,
-                          // itemExtent: 98,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (
                             context,
@@ -149,7 +148,6 @@ class _MenuPageState extends State<MenuPage> {
                                     style: TextStyle(
                                       color: state.selectedCategory ==
                                               state.categoryList[index]
-                                          //index
                                           ? Colors.white
                                           : Colors.black,
                                       fontSize: 13,
@@ -170,7 +168,6 @@ class _MenuPageState extends State<MenuPage> {
                           gridDelegate:
                               const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 200,
-                            // childAspectRatio: 1 / 1,
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15,
                             mainAxisExtent: 200,
@@ -192,7 +189,6 @@ class _MenuPageState extends State<MenuPage> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: !widget.isOrder
-                      // child: widget.isOrder == false
                       ? Container(
                           alignment: Alignment.center,
                           height: 50,
@@ -234,7 +230,6 @@ class _MenuPageState extends State<MenuPage> {
                                           restaurantName: widget.restaurantName,
                                           restaurantImage:
                                               widget.restaurantImage,
-                                          //TODO:
                                           bookedTime: Timestamp.fromDate(
                                             widget.selectedDate ??
                                                 DateTime.now(),
@@ -285,7 +280,6 @@ class _MenuPageState extends State<MenuPage> {
                                                     offset: const Offset(2, -8),
                                                     child: const Text(
                                                       'R',
-                                                      //superscript is usually smaller in size
                                                       textScaleFactor: 0.7,
                                                       style: TextStyle(
                                                         color: Colors.white,

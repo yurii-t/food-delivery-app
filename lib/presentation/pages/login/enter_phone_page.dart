@@ -66,7 +66,6 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'A user with this number is already\nregistered. Log in to the app, please',
@@ -120,7 +119,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
               right: 16,
               left: 16,
               top: 120,
-            ), // bottom: 48),
+            ),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             decoration: const BoxDecoration(
@@ -239,7 +238,6 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                               decorationThickness: 3,
-                              // decorationColor: Colors.white,
                             ),
                           ),
                         ],
@@ -388,7 +386,7 @@ class _EnterPhonePageState extends State<EnterPhonePage> {
   }
 
   void _sendOtp() {
-    final phoneNumberWithCode = _textEditingController.text; //phoneNumber;
+    final phoneNumberWithCode = _textEditingController.text;
     context.read<PhoneAuthBloc>().add(
           SendOtpToPhoneEvent(
             phoneNumber: phoneNumberWithCode,

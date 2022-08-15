@@ -81,34 +81,38 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
               child: GestureDetector(
                 onTap: () {
                   final state = context.read<OrderBloc>().state;
-                  state as OrderLoaded;
-                  if (pickedItem != null || selectedDate != null) {
-                    showModalBottomSheet<Widget?>(
-                      useRootNavigator: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(24),
+
+                  if (state is OrderLoaded) {
+                    if (pickedItem != null || selectedDate != null) {
+                      showModalBottomSheet<Widget?>(
+                        useRootNavigator: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(24),
+                          ),
                         ),
-                      ),
-                      context: context,
-                      builder: (context) {
-                        return GetoutBottomSheet(callback: () {
-                          state.order.dishes.forEach((element) {
-                            context.read<OrderBloc>().add(
-                                  RemoveAllDishes(element),
-                                );
+                        context: context,
+                        builder: (context) {
+                          return GetoutBottomSheet(callback: () {
+                            state.order.dishes.forEach((element) {
+                              context.read<OrderBloc>().add(
+                                    RemoveAllDishes(element),
+                                  );
+                            });
+                            context.router.popUntilRoot();
                           });
-                          context.router.popUntilRoot();
-                        });
-                      },
-                    );
+                        },
+                      );
+                    } else {
+                      context.router.pop();
+                      state.order.dishes.forEach((element) {
+                        context.read<OrderBloc>().add(
+                              RemoveAllDishes(element),
+                            );
+                      });
+                    }
                   } else {
                     context.router.pop();
-                    state.order.dishes.forEach((element) {
-                      context.read<OrderBloc>().add(
-                            RemoveAllDishes(element),
-                          );
-                    });
                   }
                 },
                 child: SvgPicture.asset(
@@ -156,7 +160,6 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
                     context: context,
                     initialDate: DateTime.now(),
                     firstDate: DateTime(1950),
-                    //DateTime.now() - not to allow to choose before today.
                     lastDate: DateTime(2100),
                   );
 
@@ -174,6 +177,9 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
                   }
 
                   selectedDate = DateTime(
+                    pickedDate.year,
+                    pickedDate.month,
+                    pickedDate.day,
                     pickedItem?.hour ?? DateTime.now().hour,
                     pickedItem?.minute ?? DateTime.now().minute,
                   );
@@ -187,18 +193,11 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
                       margin: const EdgeInsets.only(
                         right: 16,
                         left: 16,
-                        // bottom: 2,
                       ),
                       width: 2,
-                      // height: 21,
                       color: AppColors.lightGrey,
                     ),
-                    // const SizedBox(
-                    //   width: 7,
-                    // ),
                     Text(
-                      // '27.07.2022',
-                      //   DateFormat('dd.MM.yyyy').format(DateTime.now()),
                       selectedDateString,
                       style: const TextStyle(
                         color: Colors.black,
@@ -217,9 +216,7 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
               width: double.infinity,
               height: 220,
               child: GridView.builder(
-                // scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 50,
                   childAspectRatio: 1 / 1,
@@ -232,9 +229,18 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
 
                   return InkWell(
                     onTap: () {
-                      setState(() {
-                        pickedItem = hour;
-                      });
+                      setState(
+                        () {
+                          pickedItem = hour;
+                        },
+                      );
+                      selectedDate = DateTime(
+                        DateTime.now().year,
+                        DateTime.now().month,
+                        DateTime.now().day,
+                        pickedItem?.hour ?? DateTime.now().hour,
+                        pickedItem?.minute ?? DateTime.now().minute,
+                      );
                     },
                     child: Container(
                       width: 48,
@@ -379,7 +385,6 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
               decoration: const InputDecoration(
                 hintText: 'Your comments',
                 focusColor: Colors.white,
-                // labelStyle: TextStyle(color: Colors.white),
                 floatingLabelBehavior: FloatingLabelBehavior.auto,
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: AppColors.grey, width: 2),
@@ -392,7 +397,6 @@ class _TimeSelectPageState extends State<TimeSelectPage> {
             const SizedBox(
               height: 130,
             ),
-            // const Spacer(),
             ElevatedButton(
               onPressed: () {
                 context.router.push(MenuRoute(

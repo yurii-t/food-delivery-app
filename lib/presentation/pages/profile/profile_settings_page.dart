@@ -77,7 +77,6 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
             const Text(
               'Profile Settings',
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),

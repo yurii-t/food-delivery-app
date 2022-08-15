@@ -15,7 +15,6 @@ class GetoutBottomSheet extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             ' Are you sure you want to get out?\nAll entered information will be lost',

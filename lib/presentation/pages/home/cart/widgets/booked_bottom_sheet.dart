@@ -1,12 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/data/models/booking.dart';
 
 import 'package:food_delivery_app/presentation/pages/home/cart/widgets/rate_cafe_bottom_sheet.dart';
+import 'package:food_delivery_app/routes/app_router.gr.dart';
 
 import 'package:food_delivery_app/theme/app_colors.dart';
 
 class BookedBottomSheet extends StatelessWidget {
   final String restaurantId;
-  const BookedBottomSheet({required this.restaurantId, Key? key})
+  final Booking booking;
+  const BookedBottomSheet(
+      {required this.restaurantId, required this.booking, Key? key})
       : super(key: key);
 
   @override
@@ -35,11 +40,9 @@ class BookedBottomSheet extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Your booking number - №12',
-            // textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -61,7 +64,6 @@ class BookedBottomSheet extends StatelessWidget {
             height: 29,
           ),
           Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: ElevatedButton(
@@ -73,10 +75,8 @@ class BookedBottomSheet extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     enableFeedback: false,
                     side: BorderSide.none,
-
                     elevation: 0,
                     primary: Colors.transparent,
-                    // textStyle: TextStyle(color: Colors.red),
                     fixedSize: Size(
                       MediaQuery.of(context).size.width,
                       52,
@@ -98,7 +98,24 @@ class BookedBottomSheet extends StatelessWidget {
               ),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => null,
+                  onPressed: () {
+                    //     context.pushRoute(HomeRoute(userId: '', children: [
+                    //   ProfileRouter(
+                    //     children: [
+                    //       ProfileRoute(),
+                    //       BookingDetailedRoute(booking: booking),
+                    //     ],
+                    //   )
+                    // ])),
+                    context.replaceRoute(HomeRoute(userId: '', children: [
+                      ProfileRouter(
+                        children: [
+                          ProfileRoute(),
+                          BookingDetailedRoute(booking: booking),
+                        ],
+                      )
+                    ]));
+                  },
                   style: ElevatedButton.styleFrom(
                     side: BorderSide.none,
                     elevation: 0,

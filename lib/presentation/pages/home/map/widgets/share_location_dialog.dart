@@ -33,7 +33,6 @@ class ShareLocationDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: ElevatedButton(
@@ -43,10 +42,8 @@ class ShareLocationDialog extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       enableFeedback: false,
                       side: BorderSide.none,
-
                       elevation: 0,
                       primary: Colors.transparent,
-                      // textStyle: TextStyle(color: Colors.red),
                       fixedSize: Size(
                         MediaQuery.of(context).size.width,
                         52,
@@ -69,9 +66,6 @@ class ShareLocationDialog extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // premissionStatusCallback(
-                      //   await location.requestPermission(),
-                      // );
                       context.read<LocationBloc>().add(PermissionRequest());
                       context.router.pop();
                     },

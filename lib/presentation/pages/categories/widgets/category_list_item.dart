@@ -50,7 +50,7 @@ class CategoryListItem extends StatelessWidget {
                       filter: ImageFilter.blur(
                         sigmaX: 5,
                         sigmaY: 5,
-                      ), //ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                      ),
                       child: Image.network(
                         category.image ?? '',
                         width: 100,

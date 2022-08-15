@@ -92,7 +92,6 @@ class ProfilePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        // 'User Name',
                         state.usersInfo.name.isEmpty
                             ? 'Set your name'
                             : state.usersInfo.name,
@@ -106,7 +105,6 @@ class ProfilePage extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        // '@email',
                         state.usersInfo.email.isEmpty
                             ? 'Set your email'
                             : state.usersInfo.email,
@@ -123,7 +121,6 @@ class ProfilePage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              // 'phone Number',
                               state.usersInfo.phoneNumber,
                               style: const TextStyle(
                                 color: AppColors.grey,
@@ -158,8 +155,6 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(
                         height: 15,
                       ),
-
-                      //      onTap: () => context.router.push(const ProfileBookingRoute()),
                       GestureDetector(
                         onTap: () => context.router
                             .push(ProfileBookingRoute(bookings: bookings)),
@@ -203,7 +198,6 @@ class ProfilePage extends StatelessWidget {
 
                       return SizedBox(
                         height: 168,
-                        // width: MediaQuery.,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: state.bookings.length,
@@ -231,9 +225,9 @@ class ProfilePage extends StatelessWidget {
                                 subTitleSize: 10,
                                 enableIcons: false,
                                 statusTextSize: 10,
+                                isDetailedBooking: false,
                               ),
                             );
-                            //
                           },
                         ),
                       );

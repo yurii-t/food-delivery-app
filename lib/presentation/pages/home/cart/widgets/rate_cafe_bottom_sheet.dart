@@ -26,7 +26,6 @@ class _RateCafeBottomSheetState extends State<RateCafeBottomSheet> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Tap a star to rate cafe\non the application',
@@ -64,7 +63,6 @@ class _RateCafeBottomSheetState extends State<RateCafeBottomSheet> {
             height: 29,
           ),
           Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: ElevatedButton(
@@ -74,10 +72,8 @@ class _RateCafeBottomSheetState extends State<RateCafeBottomSheet> {
                   style: ElevatedButton.styleFrom(
                     enableFeedback: false,
                     side: BorderSide.none,
-
                     elevation: 0,
                     primary: Colors.transparent,
-                    // textStyle: TextStyle(color: Colors.red),
                     fixedSize: Size(
                       MediaQuery.of(context).size.width,
                       52,

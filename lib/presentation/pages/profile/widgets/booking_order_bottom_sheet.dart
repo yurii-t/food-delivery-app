@@ -23,7 +23,6 @@ class BookingOrderBottomSheet extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
             width: 80,

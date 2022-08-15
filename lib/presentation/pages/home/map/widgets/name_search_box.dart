@@ -93,7 +93,6 @@ class _NameSearchBoxState extends State<NameSearchBox> {
                         ),
                       ),
                       const SizedBox(
-                        // width: 80,
                         child: Divider(
                           thickness: 2,
                           color: AppColors.lightGrey,
@@ -101,7 +100,7 @@ class _NameSearchBoxState extends State<NameSearchBox> {
                       ),
                       Expanded(
                         child: ListView.separated(
-                          itemCount: resList.value.length, //searchItems.length,
+                          itemCount: resList.value.length,
                           separatorBuilder: (context, index) => const Divider(
                             thickness: 2,
                             color: AppColors.lightGrey,
@@ -124,7 +123,6 @@ class _NameSearchBoxState extends State<NameSearchBox> {
                               minLeadingWidth: 15,
                               leading: const Icon(Icons.watch_later_outlined),
                               title: Text(
-                                // 'Cafe Sante (Bar - Restaurant)',
                                 resList.value[index].name,
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -133,7 +131,6 @@ class _NameSearchBoxState extends State<NameSearchBox> {
                                 ),
                               ),
                               subtitle: Text(
-                                // '15 Shortmarket St, Cape Tow',
                                 resList.value[index].address,
                                 style: const TextStyle(
                                   color: AppColors.grey,
@@ -158,9 +155,8 @@ class _NameSearchBoxState extends State<NameSearchBox> {
           left: 12,
         ),
         margin: const EdgeInsets.only(left: 16, right: 16, top: 30),
-        width: MediaQuery.of(context).size.width, //375,
+        width: MediaQuery.of(context).size.width,
         height: 48,
-
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),

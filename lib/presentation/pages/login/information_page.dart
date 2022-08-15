@@ -38,7 +38,7 @@ class _InformationPageState extends State<InformationPage> {
           right: 16,
           left: 16,
           top: 40,
-        ), // bottom: 48),
+        ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
@@ -157,7 +157,7 @@ class _InformationPageState extends State<InformationPage> {
                     maxLength: 12,
                     decoration: InputDecoration(
                       focusColor: Colors.white,
-                      labelText: state.usersInfo.phoneNumber, //'Phone number',
+                      labelText: state.usersInfo.phoneNumber,
                       labelStyle: const TextStyle(color: Colors.white),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       enabledBorder: const UnderlineInputBorder(
@@ -197,7 +197,7 @@ class _InformationPageState extends State<InformationPage> {
                     maxLength: 12,
                     decoration: InputDecoration(
                       focusColor: Colors.white,
-                      labelText: state.usersInfo.userId, //'Identity number',
+                      labelText: state.usersInfo.userId,
                       labelStyle: const TextStyle(color: Colors.white),
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       enabledBorder: const UnderlineInputBorder(
@@ -222,8 +222,6 @@ class _InformationPageState extends State<InformationPage> {
                         context.router
                             .replace(HomeRoute(userId: state.usersInfo.userId));
                       }
-                      // ignore: unnecessary_statements
-                      null;
                     },
                     style: ElevatedButton.styleFrom(
                       primary: AppColors.orange,

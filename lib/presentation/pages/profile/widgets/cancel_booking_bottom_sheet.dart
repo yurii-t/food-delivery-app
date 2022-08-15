@@ -19,11 +19,9 @@ class CancelBookingBottomSheet extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Do you really want to cancel? ',
-            // textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -39,7 +37,6 @@ class CancelBookingBottomSheet extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Specify the reason',
               focusColor: Colors.white,
-              // labelStyle: TextStyle(color: Colors.white),
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: AppColors.grey, width: 2),
@@ -53,21 +50,17 @@ class CancelBookingBottomSheet extends StatelessWidget {
             height: 29,
           ),
           Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.pop(context);
                     context.router.pop();
                   },
                   style: ElevatedButton.styleFrom(
                     enableFeedback: false,
                     side: BorderSide.none,
-
                     elevation: 0,
                     primary: Colors.transparent,
-                    // textStyle: TextStyle(color: Colors.red),
                     fixedSize: Size(
                       MediaQuery.of(context).size.width,
                       52,

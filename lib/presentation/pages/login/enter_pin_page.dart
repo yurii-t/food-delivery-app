@@ -31,7 +31,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
 
   void startTimer() {
     const onsec = Duration(seconds: 1);
-    // Timer _timer = Timer.periodic(onsec, (timer) {
+
     _timer = Timer.periodic(onsec, (timer) {
       if (time == 0) {
         setState(() {
@@ -86,7 +86,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
             right: 16,
             left: 16,
             top: 120,
-          ), // bottom: 48),
+          ),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
@@ -134,7 +134,6 @@ class _EnterPinPageState extends State<EnterPinPage> {
                     borderRadius: BorderRadius.circular(5),
                     fieldHeight: 50,
                     fieldWidth: 40,
-                    // activeFillColor: Colors.white,
                     selectedColor: AppColors.orange,
                     inactiveColor: Colors.white,
                     activeColor: AppColors.orange,

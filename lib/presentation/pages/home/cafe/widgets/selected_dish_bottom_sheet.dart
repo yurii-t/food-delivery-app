@@ -19,6 +19,24 @@ class SelectedDishBottomSheet extends StatefulWidget {
 
 class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
   List<Menu> bottomSheetDishQuantity = [];
+  ValueNotifier<List<Menu>> quantityNotifier = ValueNotifier([]);
+  int initLength = 0;
+  @override
+  void initState() {
+    final state = context.read<OrderBloc>().state;
+    if (state is OrderLoaded) {
+      initLength = state.order.dishes.length;
+    }
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    quantityNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +46,6 @@ class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
             width: 80,
@@ -57,7 +74,6 @@ class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                // 'Grilled Prawn',
                 widget.menuItem.dishName,
                 style: const TextStyle(
                   fontSize: 20,
@@ -74,7 +90,6 @@ class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
             height: 12,
           ),
           Text(
-            // 'Wakame seaweed Sesame seeds (roasted), Soy sauce, Sesame oil, Lemon juice, Seared Yellowfin Tuna ',
             widget.menuItem.dishIngredients,
             style: const TextStyle(
               color: AppColors.grey,
@@ -94,7 +109,6 @@ class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
                 width: 5,
               ),
               Text(
-                // '185 g',
                 widget.menuItem.weight.toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -111,7 +125,6 @@ class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
                 width: 5,
               ),
               Text(
-                // '123 cal',
                 widget.menuItem.calories.toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -126,56 +139,63 @@ class _SelectedDishBottomSheetState extends State<SelectedDishBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      bottomSheetDishQuantity.remove(widget.menuItem);
-                      print('DDD ${bottomSheetDishQuantity.length}');
-                    },
-                    child: SvgPicture.asset(
-                      'assets/icons/minus.svg',
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    // '1',
-                    '${bottomSheetDishQuantity.length}',
-                    // test.toString(),
+              ValueListenableBuilder(
+                valueListenable: quantityNotifier,
+                builder: (
+                  context,
+                  list,
+                  child,
+                ) {
+                  return Row(
+                    children: [
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          bottomSheetDishQuantity.remove(widget.menuItem);
+                          quantityNotifier.value =
+                              List.from(bottomSheetDishQuantity);
+                        },
+                        child: SvgPicture.asset(
+                          'assets/icons/minus.svg',
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Text(
+                        '${quantityNotifier.value.length + initLength}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          bottomSheetDishQuantity.add(widget.menuItem);
 
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        bottomSheetDishQuantity.add(widget.menuItem);
-                      });
-
-                      print('DDD ${bottomSheetDishQuantity.length}');
-                    },
-                    child: SvgPicture.asset(
-                      'assets/icons/plus1.svg',
-                    ),
-                  ),
-                ],
+                          quantityNotifier.value =
+                              List.from(bottomSheetDishQuantity);
+                          print('DDD ${bottomSheetDishQuantity.length}');
+                        },
+                        child: SvgPicture.asset(
+                          'assets/icons/plus1.svg',
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(
                 width: 20,
               ),
               ElevatedButton(
                 onPressed: () {
-                  bottomSheetDishQuantity.forEach((element) {
+                  quantityNotifier.value.forEach((element) {
                     context.read<OrderBloc>().add(
                           AddDish(element),
                         );

@@ -27,6 +27,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     on<PermissionRequest>((event, emit) async {
       _permissionGranted = await location.requestPermission();
+      add(const LoadMap());
     });
     on<LoadMap>((event, emit) async {
       Place place = const Place(lat: 0, lon: 0);
@@ -37,9 +38,18 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       _permissionGranted = await location.hasPermission();
 
       if (_permissionGranted == PermissionStatus.denied) {
-        place = const Place(lat: 37.4868, lon: -122.2119);
-
         emit(LocationPermissionDenied());
+      }
+
+      if (_permissionGranted == PermissionStatus.deniedForever) {
+        emit(
+          LocationLoaded(
+            place: place,
+            controller: event.controller,
+            restaurants: restaurants,
+            restaurantCategories: restaurantsCategories,
+          ),
+        );
       }
 
       if (_permissionGranted == PermissionStatus.granted) {

@@ -42,10 +42,8 @@ class _ProfileSettingsCardPageState extends State<ProfileSettingsCardPage> {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                // 'Profile Settings',
                 card.number,
                 textAlign: TextAlign.start,
                 style: const TextStyle(
@@ -131,7 +129,6 @@ class _ProfileSettingsCardPageState extends State<ProfileSettingsCardPage> {
             const Text(
               'Payment Method',
               style: TextStyle(
-                // color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -144,8 +141,7 @@ class _ProfileSettingsCardPageState extends State<ProfileSettingsCardPage> {
                 builder: (context, state) {
                   if (state is UserLoaded) {
                     return ListView.builder(
-                      itemCount: state.usersInfo.paymentCards
-                          ?.length, //widget.paymentCard.length,
+                      itemCount: state.usersInfo.paymentCards?.length,
                       itemBuilder: (context, index) {
                         final lastCardDigit = state
                             .usersInfo.paymentCards?[index].number
