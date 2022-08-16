@@ -387,6 +387,11 @@ class _CartPageState extends State<CartPage> {
                           );
                         },
                       );
+                      state.order.dishes.forEach((element) {
+                        context.read<OrderBloc>().add(
+                              RemoveAllDishes(element),
+                            );
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       primary: AppColors.orange,

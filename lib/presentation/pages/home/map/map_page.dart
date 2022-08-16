@@ -139,6 +139,8 @@ class _MapPageState extends State<MapPage> {
             return Stack(
               children: [
                 GoogleMap(
+                  mapToolbarEnabled: false,
+                  zoomControlsEnabled: false,
                   markers: markers,
                   mapType: MapType.normal,
                   initialCameraPosition: CameraPosition(
@@ -222,7 +224,9 @@ class _MapPageState extends State<MapPage> {
                                   width: 4,
                                 ),
                                 Text(
-                                  choosedRestaurant?.rating.toString() ?? '',
+                                  choosedRestaurant?.rating
+                                          .toStringAsFixed(1) ??
+                                      '',
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12,
@@ -288,6 +292,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
+                            panelController.close();
                             context.router
                                 .push(CafeRoute(restaurant: choosedRestaurant));
                           },

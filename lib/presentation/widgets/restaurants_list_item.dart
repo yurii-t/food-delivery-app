@@ -117,7 +117,8 @@ class RestaurantsListItem extends StatelessWidget {
                                     width: 5,
                                   ),
                                   Text(
-                                    '${restaurant.rating}',
+                                    restaurant.rating.toStringAsFixed(1),
+                                    // '${restaurant.rating}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
@@ -167,7 +168,8 @@ class RestaurantsListItem extends StatelessWidget {
                     width: 8,
                   ),
                   Text(
-                    '${restaurant.rating}',
+                    restaurant.rating.toStringAsFixed(1),
+                    // '${restaurant.rating}',
                     style: TextStyle(
                       color: AppColors.grey,
                       fontSize: subtitleSize,

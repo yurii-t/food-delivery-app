@@ -118,7 +118,7 @@ class CategoriesPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     child: SizedBox(
-                      height: 182,
+                      height: 185,
                       width: MediaQuery.of(context).size.width,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,

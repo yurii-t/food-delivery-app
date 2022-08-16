@@ -16,7 +16,8 @@ class HomePage extends StatelessWidget {
     return AutoTabsScaffold(
       routes: const [
         MapRoute(),
-        CategoriesRoute(),
+        // CategoriesRoute(),
+        CategoryRouter(),
         FavoritesRoute(),
         ProfileRouter(),
       ],

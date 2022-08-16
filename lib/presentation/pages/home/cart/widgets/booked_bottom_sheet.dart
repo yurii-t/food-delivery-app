@@ -99,22 +99,19 @@ class BookedBottomSheet extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    //     context.pushRoute(HomeRoute(userId: '', children: [
-                    //   ProfileRouter(
-                    //     children: [
-                    //       ProfileRoute(),
-                    //       BookingDetailedRoute(booking: booking),
-                    //     ],
-                    //   )
-                    // ])),
-                    context.replaceRoute(HomeRoute(userId: '', children: [
-                      ProfileRouter(
+                    context.navigateTo(
+                      HomeRoute(
+                        userId: '',
                         children: [
-                          ProfileRoute(),
-                          BookingDetailedRoute(booking: booking),
+                          ProfileRouter(
+                            children: [
+                              const ProfileRoute(),
+                              BookingDetailedRoute(booking: booking),
+                            ],
+                          ),
                         ],
-                      )
-                    ]));
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     side: BorderSide.none,

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/presentation/blocs/favorites/bloc/favorites_bloc.dart';
 import 'package:food_delivery_app/presentation/widgets/restaurants_list_item.dart';
+import 'package:food_delivery_app/routes/app_router.gr.dart';
 import 'package:food_delivery_app/theme/app_colors.dart';
 
 class FavoritesPage extends StatelessWidget {
@@ -67,7 +68,14 @@ class FavoritesPage extends StatelessWidget {
                             const Spacer(),
                             ElevatedButton(
                               onPressed: () {
-                                context.router.popUntilRoot();
+                                context.navigateTo(
+                                  HomeRoute(
+                                    userId: '',
+                                    children: [
+                                      const MapRoute(),
+                                    ],
+                                  ),
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: AppColors.orange,

@@ -37,8 +37,19 @@ import 'package:food_delivery_app/presentation/pages/profile/profile.dart';
         AutoRoute<void>(
           page: MapPage,
         ),
+        // AutoRoute<void>(
+        //   page: CategoriesPage,
+        // ),
         AutoRoute<void>(
-          page: CategoriesPage,
+          path: 'category',
+          name: 'CategoryRouter',
+          page: EmptyRouterPage,
+          children: [
+            AutoRoute<void>(path: '', page: CategoriesPage),
+            AutoRoute<void>(page: SelectedCategoryPage),
+            AutoRoute<void>(page: BestPlacesPage),
+            RedirectRoute(path: '*', redirectTo: ''),
+          ],
         ),
         AutoRoute<void>(page: FavoritesPage),
         AutoRoute<void>(

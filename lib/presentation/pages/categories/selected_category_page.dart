@@ -20,89 +20,102 @@ class SelectedCategoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightGrey,
-      body: Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 16, top: 60),
-            height: 280,
-            width: MediaQuery.of(context).size.width,
-            color: AppColors.orange,
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () => context.router.pop(),
-                      child: SvgPicture.asset(
-                        'assets/icons/login_back_button.svg',
-                        color: Colors.white,
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          // fit: StackFit.expand,
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(
+                left: 16,
+                top: 60,
+              ),
+              height: 280,
+              width: MediaQuery.of(context).size.width,
+              color: AppColors.orange,
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () => context.router.pop(),
+                        child: SvgPicture.asset(
+                          'assets/icons/login_back_button.svg',
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    Text(
-                      category.categoryName == 'pizza'
-                          ? 'Tasty\npizza'
-                          : category.categoryName == 'burgers'
-                              ? 'True\nburgers'
-                              : category.categoryName == 'sushi'
-                                  ? 'Sushi'
-                                  : category.categoryName == 'asian'
-                                      ? 'Mama Mia,\nPasta bueno!'
-                                      : 'Pasta',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
+                      const SizedBox(
+                        height: 32,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Text(
-                      'We found ${restaurantList.length} restaurants',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                      Text(
+                        category.categoryName == 'pizza'
+                            ? 'Tasty pizza'
+                            : category.categoryName == 'burgers'
+                                ? 'True burgers'
+                                : category.categoryName == 'sushi'
+                                    ? 'Sushi'
+                                    : category.categoryName == 'asian'
+                                        ? 'Asian'
+                                        : 'Pasta',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        'We found ${restaurantList.length} restaurants',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Image.network(
+                  category.image ?? '',
+                  width: 250,
+                  height: 250,
+                ),
+              ]),
+            ),
+            Positioned(
+              top: 200,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.72,
+                width: MediaQuery.of(context).size.width,
+                child: ListView.builder(
+                  itemCount: restaurantList.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 7,
+                      ),
+                      child: RestaurantsListItem(
+                        restaurant: restaurantList[index],
+                        isCategory: false,
+                      ),
+                    );
+                  },
                 ),
               ),
-              Image.network(
-                category.image ?? '',
-                width: 250,
-                height: 250,
-              ),
-            ]),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.72,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: restaurantList.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 7,
-                    ),
-                    child: RestaurantsListItem(
-                      restaurant: restaurantList[index],
-                      isCategory: false,
-                    ),
-                  );
-                },
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

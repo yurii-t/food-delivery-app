@@ -119,7 +119,7 @@ class CafePage extends StatelessWidget {
                       width: 4,
                     ),
                     Text(
-                      restaurant?.rating.toString() ?? '',
+                      restaurant?.rating.toStringAsFixed(1) ?? '',
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
@@ -280,14 +280,7 @@ class CafePage extends StatelessWidget {
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.router.push(MenuRoute(
-                        isOrder: true,
-                        restaurantName: restaurant?.name ?? '',
-                        restaurantId: restaurant?.id ?? '',
-                        restaurantImage: restaurant?.image ?? '',
-                      ));
-                    },
+                    onPressed: () => null,
                     style: ElevatedButton.styleFrom(
                       primary: AppColors.darkBlue,
                       fixedSize: Size(MediaQuery.of(context).size.width, 52),

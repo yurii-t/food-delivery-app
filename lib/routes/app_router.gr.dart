@@ -10,18 +10,18 @@
 //
 // ignore_for_file: type=lint
 
-import 'package:auto_route/auto_route.dart' as _i13;
+import 'package:auto_route/auto_route.dart' as _i11;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i19;
 import 'package:flutter/material.dart' as _i17;
 
-import '../data/models/booking.dart' as _i22;
-import '../data/models/current_user.dart' as _i21;
-import '../data/models/payment_method.dart' as _i20;
+import '../data/models/booking.dart' as _i23;
+import '../data/models/current_user.dart' as _i22;
+import '../data/models/payment_method.dart' as _i21;
 import '../data/models/restaurant.dart' as _i18;
-import '../data/models/restaurant_category.dart' as _i23;
-import '../presentation/pages/categories/best_places_page.dart' as _i16;
-import '../presentation/pages/categories/categories_page.dart' as _i11;
-import '../presentation/pages/categories/selected_category_page.dart' as _i15;
+import '../data/models/restaurant_category.dart' as _i20;
+import '../presentation/pages/categories/best_places_page.dart' as _i15;
+import '../presentation/pages/categories/categories_page.dart' as _i13;
+import '../presentation/pages/categories/selected_category_page.dart' as _i14;
 import '../presentation/pages/favorites/favorites_page.dart' as _i12;
 import '../presentation/pages/home/cafe/cafe_page.dart' as _i5;
 import '../presentation/pages/home/cafe/menu_page.dart' as _i7;
@@ -33,25 +33,25 @@ import '../presentation/pages/login/auth_page.dart' as _i1;
 import '../presentation/pages/login/enter_phone_page.dart' as _i2;
 import '../presentation/pages/login/enter_pin_page.dart' as _i3;
 import '../presentation/pages/login/information_page.dart' as _i4;
-import '../presentation/pages/profile/profile.dart' as _i14;
+import '../presentation/pages/profile/profile.dart' as _i16;
 
-class AppRouter extends _i13.RootStackRouter {
+class AppRouter extends _i11.RootStackRouter {
   AppRouter([_i17.GlobalKey<_i17.NavigatorState>? navigatorKey])
       : super(navigatorKey);
 
   @override
-  final Map<String, _i13.PageFactory> pagesMap = {
+  final Map<String, _i11.PageFactory> pagesMap = {
     AuthRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData, child: const _i1.AuthPage());
     },
     EnterPhoneRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData, child: const _i2.EnterPhonePage());
     },
     EnterPinRoute.name: (routeData) {
       final args = routeData.argsAs<EnterPinRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
           child: _i3.EnterPinPage(
               verId: args.verId,
@@ -60,18 +60,18 @@ class AppRouter extends _i13.RootStackRouter {
               key: args.key));
     },
     InformationRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData, child: const _i4.InformationPage());
     },
     CafeRoute.name: (routeData) {
       final args = routeData.argsAs<CafeRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
           child: _i5.CafePage(restaurant: args.restaurant, key: args.key));
     },
     CartRoute.name: (routeData) {
       final args = routeData.argsAs<CartRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
           child: _i6.CartPage(
               restaurantId: args.restaurantId,
@@ -83,7 +83,7 @@ class AppRouter extends _i13.RootStackRouter {
     },
     MenuRoute.name: (routeData) {
       final args = routeData.argsAs<MenuRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
           child: _i7.MenuPage(
               isOrder: args.isOrder,
@@ -96,7 +96,7 @@ class AppRouter extends _i13.RootStackRouter {
     },
     TimeSelectRoute.name: (routeData) {
       final args = routeData.argsAs<TimeSelectRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
           child: _i8.TimeSelectPage(
               openHour: args.openHour,
@@ -109,133 +109,152 @@ class AppRouter extends _i13.RootStackRouter {
     },
     HomeRoute.name: (routeData) {
       final args = routeData.argsAs<HomeRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
           child: _i9.HomePage(userId: args.userId, key: args.key));
     },
     MapRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData, child: const _i10.MapPage());
     },
-    CategoriesRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
-          routeData: routeData, child: const _i11.CategoriesPage());
+    CategoryRouter.name: (routeData) {
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i11.EmptyRouterPage());
     },
     FavoritesRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData, child: const _i12.FavoritesPage());
     },
     ProfileRouter.name: (routeData) {
-      return _i13.MaterialPageX<void>(
-          routeData: routeData, child: const _i13.EmptyRouterPage());
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i11.EmptyRouterPage());
     },
-    ProfileRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
-          routeData: routeData, child: const _i14.ProfilePage());
-    },
-    ProfileSettingsCardRoute.name: (routeData) {
-      final args = routeData.argsAs<ProfileSettingsCardRouteArgs>();
-      return _i13.MaterialPageX<void>(
-          routeData: routeData,
-          child: _i14.ProfileSettingsCardPage(
-              paymentCard: args.paymentCard,
-              mainCard: args.mainCard,
-              key: args.key));
-    },
-    ProfileSettingsRoute.name: (routeData) {
-      final args = routeData.argsAs<ProfileSettingsRouteArgs>();
-      return _i13.MaterialPageX<void>(
-          routeData: routeData,
-          child:
-              _i14.ProfileSettingsPage(userInfo: args.userInfo, key: args.key));
-    },
-    SupportServiceRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
-          routeData: routeData, child: const _i14.SupportServicePage());
-    },
-    AboutApplicationRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
-          routeData: routeData, child: const _i14.AboutApplicationPage());
-    },
-    ProfileBookingRoute.name: (routeData) {
-      final args = routeData.argsAs<ProfileBookingRouteArgs>();
-      return _i13.MaterialPageX<void>(
-          routeData: routeData,
-          child:
-              _i14.ProfileBookingPage(bookings: args.bookings, key: args.key));
-    },
-    BookingDetailedRoute.name: (routeData) {
-      final args = routeData.argsAs<BookingDetailedRouteArgs>();
-      return _i13.MaterialPageX<void>(
-          routeData: routeData,
-          child:
-              _i14.BookingDetailedPage(booking: args.booking, key: args.key));
-    },
-    AddNewCardRoute.name: (routeData) {
-      return _i13.MaterialPageX<void>(
-          routeData: routeData, child: const _i14.AddNewCardPage());
+    CategoriesRoute.name: (routeData) {
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i13.CategoriesPage());
     },
     SelectedCategoryRoute.name: (routeData) {
       final args = routeData.argsAs<SelectedCategoryRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
-          child: _i15.SelectedCategoryPage(
+          child: _i14.SelectedCategoryPage(
               restaurantList: args.restaurantList,
               category: args.category,
               key: args.key));
     },
     BestPlacesRoute.name: (routeData) {
       final args = routeData.argsAs<BestPlacesRouteArgs>();
-      return _i13.MaterialPageX<void>(
+      return _i11.MaterialPageX<void>(
           routeData: routeData,
-          child: _i16.BestPlacesPage(
+          child: _i15.BestPlacesPage(
               bestPlacesList: args.bestPlacesList, key: args.key));
+    },
+    ProfileRoute.name: (routeData) {
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i16.ProfilePage());
+    },
+    ProfileSettingsCardRoute.name: (routeData) {
+      final args = routeData.argsAs<ProfileSettingsCardRouteArgs>();
+      return _i11.MaterialPageX<void>(
+          routeData: routeData,
+          child: _i16.ProfileSettingsCardPage(
+              paymentCard: args.paymentCard,
+              mainCard: args.mainCard,
+              key: args.key));
+    },
+    ProfileSettingsRoute.name: (routeData) {
+      final args = routeData.argsAs<ProfileSettingsRouteArgs>();
+      return _i11.MaterialPageX<void>(
+          routeData: routeData,
+          child:
+              _i16.ProfileSettingsPage(userInfo: args.userInfo, key: args.key));
+    },
+    SupportServiceRoute.name: (routeData) {
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i16.SupportServicePage());
+    },
+    AboutApplicationRoute.name: (routeData) {
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i16.AboutApplicationPage());
+    },
+    ProfileBookingRoute.name: (routeData) {
+      final args = routeData.argsAs<ProfileBookingRouteArgs>();
+      return _i11.MaterialPageX<void>(
+          routeData: routeData,
+          child:
+              _i16.ProfileBookingPage(bookings: args.bookings, key: args.key));
+    },
+    BookingDetailedRoute.name: (routeData) {
+      final args = routeData.argsAs<BookingDetailedRouteArgs>();
+      return _i11.MaterialPageX<void>(
+          routeData: routeData,
+          child:
+              _i16.BookingDetailedPage(booking: args.booking, key: args.key));
+    },
+    AddNewCardRoute.name: (routeData) {
+      return _i11.MaterialPageX<void>(
+          routeData: routeData, child: const _i16.AddNewCardPage());
     }
   };
 
   @override
-  List<_i13.RouteConfig> get routes => [
-        _i13.RouteConfig(AuthRoute.name, path: '/'),
-        _i13.RouteConfig(EnterPhoneRoute.name, path: '/enter-phone-page'),
-        _i13.RouteConfig(EnterPinRoute.name, path: '/enter-pin-page'),
-        _i13.RouteConfig(InformationRoute.name, path: '/information-page'),
-        _i13.RouteConfig(CafeRoute.name, path: '/cafe-page'),
-        _i13.RouteConfig(CartRoute.name, path: '/cart-page'),
-        _i13.RouteConfig(MenuRoute.name, path: '/menu-page'),
-        _i13.RouteConfig(TimeSelectRoute.name, path: '/time-select-page'),
-        _i13.RouteConfig(HomeRoute.name, path: '/home-page', children: [
-          _i13.RouteConfig(MapRoute.name,
+  List<_i11.RouteConfig> get routes => [
+        _i11.RouteConfig(AuthRoute.name, path: '/'),
+        _i11.RouteConfig(EnterPhoneRoute.name, path: '/enter-phone-page'),
+        _i11.RouteConfig(EnterPinRoute.name, path: '/enter-pin-page'),
+        _i11.RouteConfig(InformationRoute.name, path: '/information-page'),
+        _i11.RouteConfig(CafeRoute.name, path: '/cafe-page'),
+        _i11.RouteConfig(CartRoute.name, path: '/cart-page'),
+        _i11.RouteConfig(MenuRoute.name, path: '/menu-page'),
+        _i11.RouteConfig(TimeSelectRoute.name, path: '/time-select-page'),
+        _i11.RouteConfig(HomeRoute.name, path: '/home-page', children: [
+          _i11.RouteConfig(MapRoute.name,
               path: 'map-page', parent: HomeRoute.name),
-          _i13.RouteConfig(CategoriesRoute.name,
-              path: 'categories-page', parent: HomeRoute.name),
-          _i13.RouteConfig(FavoritesRoute.name,
+          _i11.RouteConfig(CategoryRouter.name,
+              path: 'category',
+              parent: HomeRoute.name,
+              children: [
+                _i11.RouteConfig(CategoriesRoute.name,
+                    path: '', parent: CategoryRouter.name),
+                _i11.RouteConfig(SelectedCategoryRoute.name,
+                    path: 'selected-category-page',
+                    parent: CategoryRouter.name),
+                _i11.RouteConfig(BestPlacesRoute.name,
+                    path: 'best-places-page', parent: CategoryRouter.name),
+                _i11.RouteConfig('*#redirect',
+                    path: '*',
+                    parent: CategoryRouter.name,
+                    redirectTo: '',
+                    fullMatch: true)
+              ]),
+          _i11.RouteConfig(FavoritesRoute.name,
               path: 'favorites-page', parent: HomeRoute.name),
-          _i13.RouteConfig(ProfileRouter.name,
+          _i11.RouteConfig(ProfileRouter.name,
               path: 'profile',
               parent: HomeRoute.name,
               children: [
-                _i13.RouteConfig(ProfileRoute.name,
+                _i11.RouteConfig(ProfileRoute.name,
                     path: '', parent: ProfileRouter.name),
-                _i13.RouteConfig(ProfileSettingsCardRoute.name,
+                _i11.RouteConfig(ProfileSettingsCardRoute.name,
                     path: 'profile-settings-card-page',
                     parent: ProfileRouter.name),
-                _i13.RouteConfig(ProfileSettingsRoute.name,
+                _i11.RouteConfig(ProfileSettingsRoute.name,
                     path: 'profile-settings-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(SupportServiceRoute.name,
+                _i11.RouteConfig(SupportServiceRoute.name,
                     path: 'support-service-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(AboutApplicationRoute.name,
+                _i11.RouteConfig(AboutApplicationRoute.name,
                     path: 'about-application-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(ProfileBookingRoute.name,
+                _i11.RouteConfig(ProfileBookingRoute.name,
                     path: 'profile-booking-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(BookingDetailedRoute.name,
+                _i11.RouteConfig(BookingDetailedRoute.name,
                     path: 'booking-detailed-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(AddNewCardRoute.name,
+                _i11.RouteConfig(AddNewCardRoute.name,
                     path: 'add-new-card-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(SelectedCategoryRoute.name,
+                _i11.RouteConfig(SelectedCategoryRoute.name,
                     path: 'selected-category-page', parent: ProfileRouter.name),
-                _i13.RouteConfig(BestPlacesRoute.name,
+                _i11.RouteConfig(BestPlacesRoute.name,
                     path: 'best-places-page', parent: ProfileRouter.name),
-                _i13.RouteConfig('*#redirect',
+                _i11.RouteConfig('*#redirect',
                     path: '*',
                     parent: ProfileRouter.name,
                     redirectTo: '',
@@ -247,7 +266,7 @@ class AppRouter extends _i13.RootStackRouter {
 
 /// generated route for
 /// [_i1.AuthPage]
-class AuthRoute extends _i13.PageRouteInfo<void> {
+class AuthRoute extends _i11.PageRouteInfo<void> {
   const AuthRoute() : super(AuthRoute.name, path: '/');
 
   static const String name = 'AuthRoute';
@@ -255,7 +274,7 @@ class AuthRoute extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.EnterPhonePage]
-class EnterPhoneRoute extends _i13.PageRouteInfo<void> {
+class EnterPhoneRoute extends _i11.PageRouteInfo<void> {
   const EnterPhoneRoute()
       : super(EnterPhoneRoute.name, path: '/enter-phone-page');
 
@@ -264,7 +283,7 @@ class EnterPhoneRoute extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.EnterPinPage]
-class EnterPinRoute extends _i13.PageRouteInfo<EnterPinRouteArgs> {
+class EnterPinRoute extends _i11.PageRouteInfo<EnterPinRouteArgs> {
   EnterPinRoute(
       {required String verId,
       required bool isRegistration,
@@ -304,7 +323,7 @@ class EnterPinRouteArgs {
 
 /// generated route for
 /// [_i4.InformationPage]
-class InformationRoute extends _i13.PageRouteInfo<void> {
+class InformationRoute extends _i11.PageRouteInfo<void> {
   const InformationRoute()
       : super(InformationRoute.name, path: '/information-page');
 
@@ -313,7 +332,7 @@ class InformationRoute extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.CafePage]
-class CafeRoute extends _i13.PageRouteInfo<CafeRouteArgs> {
+class CafeRoute extends _i11.PageRouteInfo<CafeRouteArgs> {
   CafeRoute({required _i18.Restaurant? restaurant, _i17.Key? key})
       : super(CafeRoute.name,
             path: '/cafe-page',
@@ -337,7 +356,7 @@ class CafeRouteArgs {
 
 /// generated route for
 /// [_i6.CartPage]
-class CartRoute extends _i13.PageRouteInfo<CartRouteArgs> {
+class CartRoute extends _i11.PageRouteInfo<CartRouteArgs> {
   CartRoute(
       {required String restaurantId,
       required String restaurantName,
@@ -387,7 +406,7 @@ class CartRouteArgs {
 
 /// generated route for
 /// [_i7.MenuPage]
-class MenuRoute extends _i13.PageRouteInfo<MenuRouteArgs> {
+class MenuRoute extends _i11.PageRouteInfo<MenuRouteArgs> {
   MenuRoute(
       {required bool isOrder,
       required String restaurantId,
@@ -442,7 +461,7 @@ class MenuRouteArgs {
 
 /// generated route for
 /// [_i8.TimeSelectPage]
-class TimeSelectRoute extends _i13.PageRouteInfo<TimeSelectRouteArgs> {
+class TimeSelectRoute extends _i11.PageRouteInfo<TimeSelectRouteArgs> {
   TimeSelectRoute(
       {required _i19.Timestamp openHour,
       required _i19.Timestamp closeHour,
@@ -497,11 +516,11 @@ class TimeSelectRouteArgs {
 
 /// generated route for
 /// [_i9.HomePage]
-class HomeRoute extends _i13.PageRouteInfo<HomeRouteArgs> {
+class HomeRoute extends _i11.PageRouteInfo<HomeRouteArgs> {
   HomeRoute(
       {required String userId,
       _i17.Key? key,
-      List<_i13.PageRouteInfo>? children})
+      List<_i11.PageRouteInfo>? children})
       : super(HomeRoute.name,
             path: '/home-page',
             args: HomeRouteArgs(userId: userId, key: key),
@@ -525,186 +544,53 @@ class HomeRouteArgs {
 
 /// generated route for
 /// [_i10.MapPage]
-class MapRoute extends _i13.PageRouteInfo<void> {
+class MapRoute extends _i11.PageRouteInfo<void> {
   const MapRoute() : super(MapRoute.name, path: 'map-page');
 
   static const String name = 'MapRoute';
 }
 
 /// generated route for
-/// [_i11.CategoriesPage]
-class CategoriesRoute extends _i13.PageRouteInfo<void> {
-  const CategoriesRoute()
-      : super(CategoriesRoute.name, path: 'categories-page');
+/// [_i11.EmptyRouterPage]
+class CategoryRouter extends _i11.PageRouteInfo<void> {
+  const CategoryRouter({List<_i11.PageRouteInfo>? children})
+      : super(CategoryRouter.name, path: 'category', initialChildren: children);
 
-  static const String name = 'CategoriesRoute';
+  static const String name = 'CategoryRouter';
 }
 
 /// generated route for
 /// [_i12.FavoritesPage]
-class FavoritesRoute extends _i13.PageRouteInfo<void> {
+class FavoritesRoute extends _i11.PageRouteInfo<void> {
   const FavoritesRoute() : super(FavoritesRoute.name, path: 'favorites-page');
 
   static const String name = 'FavoritesRoute';
 }
 
 /// generated route for
-/// [_i13.EmptyRouterPage]
-class ProfileRouter extends _i13.PageRouteInfo<void> {
-  const ProfileRouter({List<_i13.PageRouteInfo>? children})
+/// [_i11.EmptyRouterPage]
+class ProfileRouter extends _i11.PageRouteInfo<void> {
+  const ProfileRouter({List<_i11.PageRouteInfo>? children})
       : super(ProfileRouter.name, path: 'profile', initialChildren: children);
 
   static const String name = 'ProfileRouter';
 }
 
 /// generated route for
-/// [_i14.ProfilePage]
-class ProfileRoute extends _i13.PageRouteInfo<void> {
-  const ProfileRoute() : super(ProfileRoute.name, path: '');
+/// [_i13.CategoriesPage]
+class CategoriesRoute extends _i11.PageRouteInfo<void> {
+  const CategoriesRoute() : super(CategoriesRoute.name, path: '');
 
-  static const String name = 'ProfileRoute';
+  static const String name = 'CategoriesRoute';
 }
 
 /// generated route for
-/// [_i14.ProfileSettingsCardPage]
-class ProfileSettingsCardRoute
-    extends _i13.PageRouteInfo<ProfileSettingsCardRouteArgs> {
-  ProfileSettingsCardRoute(
-      {required List<_i20.PaymentMethod> paymentCard,
-      required String mainCard,
-      _i17.Key? key})
-      : super(ProfileSettingsCardRoute.name,
-            path: 'profile-settings-card-page',
-            args: ProfileSettingsCardRouteArgs(
-                paymentCard: paymentCard, mainCard: mainCard, key: key));
-
-  static const String name = 'ProfileSettingsCardRoute';
-}
-
-class ProfileSettingsCardRouteArgs {
-  const ProfileSettingsCardRouteArgs(
-      {required this.paymentCard, required this.mainCard, this.key});
-
-  final List<_i20.PaymentMethod> paymentCard;
-
-  final String mainCard;
-
-  final _i17.Key? key;
-
-  @override
-  String toString() {
-    return 'ProfileSettingsCardRouteArgs{paymentCard: $paymentCard, mainCard: $mainCard, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i14.ProfileSettingsPage]
-class ProfileSettingsRoute
-    extends _i13.PageRouteInfo<ProfileSettingsRouteArgs> {
-  ProfileSettingsRoute({required _i21.CurrentUser userInfo, _i17.Key? key})
-      : super(ProfileSettingsRoute.name,
-            path: 'profile-settings-page',
-            args: ProfileSettingsRouteArgs(userInfo: userInfo, key: key));
-
-  static const String name = 'ProfileSettingsRoute';
-}
-
-class ProfileSettingsRouteArgs {
-  const ProfileSettingsRouteArgs({required this.userInfo, this.key});
-
-  final _i21.CurrentUser userInfo;
-
-  final _i17.Key? key;
-
-  @override
-  String toString() {
-    return 'ProfileSettingsRouteArgs{userInfo: $userInfo, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i14.SupportServicePage]
-class SupportServiceRoute extends _i13.PageRouteInfo<void> {
-  const SupportServiceRoute()
-      : super(SupportServiceRoute.name, path: 'support-service-page');
-
-  static const String name = 'SupportServiceRoute';
-}
-
-/// generated route for
-/// [_i14.AboutApplicationPage]
-class AboutApplicationRoute extends _i13.PageRouteInfo<void> {
-  const AboutApplicationRoute()
-      : super(AboutApplicationRoute.name, path: 'about-application-page');
-
-  static const String name = 'AboutApplicationRoute';
-}
-
-/// generated route for
-/// [_i14.ProfileBookingPage]
-class ProfileBookingRoute extends _i13.PageRouteInfo<ProfileBookingRouteArgs> {
-  ProfileBookingRoute({required List<_i22.Booking> bookings, _i17.Key? key})
-      : super(ProfileBookingRoute.name,
-            path: 'profile-booking-page',
-            args: ProfileBookingRouteArgs(bookings: bookings, key: key));
-
-  static const String name = 'ProfileBookingRoute';
-}
-
-class ProfileBookingRouteArgs {
-  const ProfileBookingRouteArgs({required this.bookings, this.key});
-
-  final List<_i22.Booking> bookings;
-
-  final _i17.Key? key;
-
-  @override
-  String toString() {
-    return 'ProfileBookingRouteArgs{bookings: $bookings, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i14.BookingDetailedPage]
-class BookingDetailedRoute
-    extends _i13.PageRouteInfo<BookingDetailedRouteArgs> {
-  BookingDetailedRoute({required _i22.Booking booking, _i17.Key? key})
-      : super(BookingDetailedRoute.name,
-            path: 'booking-detailed-page',
-            args: BookingDetailedRouteArgs(booking: booking, key: key));
-
-  static const String name = 'BookingDetailedRoute';
-}
-
-class BookingDetailedRouteArgs {
-  const BookingDetailedRouteArgs({required this.booking, this.key});
-
-  final _i22.Booking booking;
-
-  final _i17.Key? key;
-
-  @override
-  String toString() {
-    return 'BookingDetailedRouteArgs{booking: $booking, key: $key}';
-  }
-}
-
-/// generated route for
-/// [_i14.AddNewCardPage]
-class AddNewCardRoute extends _i13.PageRouteInfo<void> {
-  const AddNewCardRoute()
-      : super(AddNewCardRoute.name, path: 'add-new-card-page');
-
-  static const String name = 'AddNewCardRoute';
-}
-
-/// generated route for
-/// [_i15.SelectedCategoryPage]
+/// [_i14.SelectedCategoryPage]
 class SelectedCategoryRoute
-    extends _i13.PageRouteInfo<SelectedCategoryRouteArgs> {
+    extends _i11.PageRouteInfo<SelectedCategoryRouteArgs> {
   SelectedCategoryRoute(
       {required List<_i18.Restaurant> restaurantList,
-      required _i23.RestaurantCategory category,
+      required _i20.RestaurantCategory category,
       _i17.Key? key})
       : super(SelectedCategoryRoute.name,
             path: 'selected-category-page',
@@ -720,7 +606,7 @@ class SelectedCategoryRouteArgs {
 
   final List<_i18.Restaurant> restaurantList;
 
-  final _i23.RestaurantCategory category;
+  final _i20.RestaurantCategory category;
 
   final _i17.Key? key;
 
@@ -731,8 +617,8 @@ class SelectedCategoryRouteArgs {
 }
 
 /// generated route for
-/// [_i16.BestPlacesPage]
-class BestPlacesRoute extends _i13.PageRouteInfo<BestPlacesRouteArgs> {
+/// [_i15.BestPlacesPage]
+class BestPlacesRoute extends _i11.PageRouteInfo<BestPlacesRouteArgs> {
   BestPlacesRoute(
       {required List<_i18.Restaurant> bestPlacesList, _i17.Key? key})
       : super(BestPlacesRoute.name,
@@ -754,4 +640,145 @@ class BestPlacesRouteArgs {
   String toString() {
     return 'BestPlacesRouteArgs{bestPlacesList: $bestPlacesList, key: $key}';
   }
+}
+
+/// generated route for
+/// [_i16.ProfilePage]
+class ProfileRoute extends _i11.PageRouteInfo<void> {
+  const ProfileRoute() : super(ProfileRoute.name, path: '');
+
+  static const String name = 'ProfileRoute';
+}
+
+/// generated route for
+/// [_i16.ProfileSettingsCardPage]
+class ProfileSettingsCardRoute
+    extends _i11.PageRouteInfo<ProfileSettingsCardRouteArgs> {
+  ProfileSettingsCardRoute(
+      {required List<_i21.PaymentMethod> paymentCard,
+      required String mainCard,
+      _i17.Key? key})
+      : super(ProfileSettingsCardRoute.name,
+            path: 'profile-settings-card-page',
+            args: ProfileSettingsCardRouteArgs(
+                paymentCard: paymentCard, mainCard: mainCard, key: key));
+
+  static const String name = 'ProfileSettingsCardRoute';
+}
+
+class ProfileSettingsCardRouteArgs {
+  const ProfileSettingsCardRouteArgs(
+      {required this.paymentCard, required this.mainCard, this.key});
+
+  final List<_i21.PaymentMethod> paymentCard;
+
+  final String mainCard;
+
+  final _i17.Key? key;
+
+  @override
+  String toString() {
+    return 'ProfileSettingsCardRouteArgs{paymentCard: $paymentCard, mainCard: $mainCard, key: $key}';
+  }
+}
+
+/// generated route for
+/// [_i16.ProfileSettingsPage]
+class ProfileSettingsRoute
+    extends _i11.PageRouteInfo<ProfileSettingsRouteArgs> {
+  ProfileSettingsRoute({required _i22.CurrentUser userInfo, _i17.Key? key})
+      : super(ProfileSettingsRoute.name,
+            path: 'profile-settings-page',
+            args: ProfileSettingsRouteArgs(userInfo: userInfo, key: key));
+
+  static const String name = 'ProfileSettingsRoute';
+}
+
+class ProfileSettingsRouteArgs {
+  const ProfileSettingsRouteArgs({required this.userInfo, this.key});
+
+  final _i22.CurrentUser userInfo;
+
+  final _i17.Key? key;
+
+  @override
+  String toString() {
+    return 'ProfileSettingsRouteArgs{userInfo: $userInfo, key: $key}';
+  }
+}
+
+/// generated route for
+/// [_i16.SupportServicePage]
+class SupportServiceRoute extends _i11.PageRouteInfo<void> {
+  const SupportServiceRoute()
+      : super(SupportServiceRoute.name, path: 'support-service-page');
+
+  static const String name = 'SupportServiceRoute';
+}
+
+/// generated route for
+/// [_i16.AboutApplicationPage]
+class AboutApplicationRoute extends _i11.PageRouteInfo<void> {
+  const AboutApplicationRoute()
+      : super(AboutApplicationRoute.name, path: 'about-application-page');
+
+  static const String name = 'AboutApplicationRoute';
+}
+
+/// generated route for
+/// [_i16.ProfileBookingPage]
+class ProfileBookingRoute extends _i11.PageRouteInfo<ProfileBookingRouteArgs> {
+  ProfileBookingRoute({required List<_i23.Booking> bookings, _i17.Key? key})
+      : super(ProfileBookingRoute.name,
+            path: 'profile-booking-page',
+            args: ProfileBookingRouteArgs(bookings: bookings, key: key));
+
+  static const String name = 'ProfileBookingRoute';
+}
+
+class ProfileBookingRouteArgs {
+  const ProfileBookingRouteArgs({required this.bookings, this.key});
+
+  final List<_i23.Booking> bookings;
+
+  final _i17.Key? key;
+
+  @override
+  String toString() {
+    return 'ProfileBookingRouteArgs{bookings: $bookings, key: $key}';
+  }
+}
+
+/// generated route for
+/// [_i16.BookingDetailedPage]
+class BookingDetailedRoute
+    extends _i11.PageRouteInfo<BookingDetailedRouteArgs> {
+  BookingDetailedRoute({required _i23.Booking booking, _i17.Key? key})
+      : super(BookingDetailedRoute.name,
+            path: 'booking-detailed-page',
+            args: BookingDetailedRouteArgs(booking: booking, key: key));
+
+  static const String name = 'BookingDetailedRoute';
+}
+
+class BookingDetailedRouteArgs {
+  const BookingDetailedRouteArgs({required this.booking, this.key});
+
+  final _i23.Booking booking;
+
+  final _i17.Key? key;
+
+  @override
+  String toString() {
+    return 'BookingDetailedRouteArgs{booking: $booking, key: $key}';
+  }
+}
+
+/// generated route for
+/// [_i16.AddNewCardPage]
+class AddNewCardRoute extends _i11.PageRouteInfo<void> {
+  const AddNewCardRoute()
+      : super(AddNewCardRoute.name, path: 'add-new-card-page');
+
+  static const String name = 'AddNewCardRoute';
 }

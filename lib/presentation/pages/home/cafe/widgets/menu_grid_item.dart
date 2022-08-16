@@ -40,7 +40,7 @@ class _MenuGridItemState extends State<MenuGridItem> {
         );
       },
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        // mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -117,7 +117,7 @@ class _MenuGridItemState extends State<MenuGridItem> {
                               : SvgPicture.asset(
                                   'assets/icons/plus.svg',
                                 ),
-                          size: 28,
+                          size: 27,
                           shadow: true,
                         ),
                       );
