@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:food_delivery_app/data/datasource/firebase_remote_datasource_impl.dart';
 import 'package:food_delivery_app/data/datasource/places_datasource_impl.dart';
@@ -7,6 +8,7 @@ import 'package:food_delivery_app/data/models/restaurant.dart';
 import 'package:food_delivery_app/data/models/restaurant_category.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'location_event.dart';
 part 'location_state.dart';
@@ -23,53 +25,78 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     required this.firebaseRemoteDataSourceImpl,
     required this.placesDatasourceImpl,
   }) : super(LocationInitial()) {
-    List<Restaurant> initRestaurantsList = [];
-
+    final restaurants = firebaseRemoteDataSourceImpl.getRestaurantsStream();
     on<PermissionRequest>((event, emit) async {
       _permissionGranted = await location.requestPermission();
       add(const LoadMap());
     });
-    on<LoadMap>((event, emit) async {
-      Place place = const Place(lat: 0, lon: 0);
-      final restaurants = await firebaseRemoteDataSourceImpl.getRestaurants();
-      final restaurantsCategories =
-          await firebaseRemoteDataSourceImpl.getRestaurantCategories();
-      initRestaurantsList = restaurants;
-      _permissionGranted = await location.hasPermission();
+    on<LoadMap>(
+      (event, emit) async {
+        Place place = const Place(lat: 0, lon: 0);
 
-      if (_permissionGranted == PermissionStatus.denied) {
-        emit(LocationPermissionDenied());
-      }
+        final restaurantsCategories =
+            await firebaseRemoteDataSourceImpl.getRestaurantCategories();
 
-      if (_permissionGranted == PermissionStatus.deniedForever) {
-        emit(
-          LocationLoaded(
-            place: place,
-            controller: event.controller,
-            restaurants: restaurants,
-            restaurantCategories: restaurantsCategories,
-          ),
-        );
-      }
+        _permissionGranted = await location.hasPermission();
 
-      if (_permissionGranted == PermissionStatus.granted) {
-        locationData = await location.getLocation();
-        place = Place(
-          lat: locationData?.latitude ?? 37.4868,
-          lon: locationData?.longitude ?? -122.2119,
-        );
+        if (_permissionGranted == PermissionStatus.denied) {
+          emit(LocationPermissionDenied());
+        }
 
-        emit(
-          LocationLoaded(
-            place: place,
-            controller: event.controller,
-            restaurants: restaurants,
-            restaurantCategories: restaurantsCategories,
-            locationData: locationData,
-          ),
-        );
-      }
-    });
+        if (_permissionGranted == PermissionStatus.deniedForever) {
+          emit(
+            LocationLoaded(
+              place: place,
+              controller: event.controller,
+              restaurants: await restaurants.first,
+              restaurantCategories: restaurantsCategories,
+            ),
+          );
+        }
+
+        if (_permissionGranted == PermissionStatus.granted) {
+          final streamUserLocation = location.onLocationChanged;
+
+          place = Place(
+            lat: locationData?.latitude ?? 37.4868,
+            lon: locationData?.longitude ?? -122.2119,
+          );
+
+          var testStream = Rx.combineLatest2(
+            streamUserLocation,
+            restaurants,
+            (location, restaurants) {
+              return CombinedLocationDataRestaurants(
+                restaurants as List<Restaurant>,
+                location as LocationData,
+              );
+            },
+          );
+
+          await emit.forEach(
+            testStream,
+            onData: (CombinedLocationDataRestaurants data) {
+              final state = this.state;
+
+              return state is LocationLoaded
+                  ? state.copyWith(
+                      locationData: data.locationData,
+                      selectedRestaurant: state.selectedRestaurant,
+                      controller: event.controller,
+                    )
+                  : LocationLoaded(
+                      place: place,
+                      controller: event.controller,
+                      restaurants: data.restaurants,
+                      restaurantCategories: restaurantsCategories,
+                      locationData: data.locationData,
+                    );
+            },
+          );
+        }
+      },
+      transformer: restartable(),
+    );
     on<SearchLocation>((event, emit) async {
       final state = this.state as LocationLoaded;
       final Place place = await placesDatasourceImpl.getPlace(event.placeId);
@@ -78,14 +105,16 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         CameraUpdate.newLatLngZoom(LatLng(place.lat, place.lon), 20),
       );
 
-      final restaurants = await firebaseRemoteDataSourceImpl.getRestaurants();
+      final restaurantsFirebase =
+          await firebaseRemoteDataSourceImpl.getRestaurantsStream();
       emit(
-        LocationLoaded(
+        state.copyWith(
+          restaurants: await restaurantsFirebase.first,
           place: place,
-          controller: state.controller,
-          restaurants: restaurants,
-          restaurantCategories: state.restaurantCategories,
-          locationData: locationData,
+          selectedCategory: const RestaurantCategory(
+            categoryName: '',
+            categoryNameIcon: '',
+          ),
         ),
       );
     });
@@ -99,14 +128,16 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       final Place place =
           Place(lat: event.location.latitude, lon: event.location.longitude);
 
-      final restaurants = await firebaseRemoteDataSourceImpl.getRestaurants();
+      final restaurantsFirebase =
+          await firebaseRemoteDataSourceImpl.getRestaurantsStream();
       emit(
-        LocationLoaded(
+        state.copyWith(
+          restaurants: await restaurantsFirebase.first,
           place: place,
-          controller: state.controller,
-          restaurants: restaurants,
-          restaurantCategories: state.restaurantCategories,
-          locationData: locationData,
+          selectedCategory: const RestaurantCategory(
+            categoryName: '',
+            categoryNameIcon: '',
+          ),
         ),
       );
     });
@@ -114,50 +145,55 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<SelectMarkerRestaurant>((event, emit) async {
       final state = this.state as LocationLoaded;
 
-      final restaurants = List<Restaurant>.from(state.restaurants);
-
       emit(
-        LocationLoaded(
-          place: state.place,
-          controller: state.controller,
-          restaurants: restaurants,
+        state.copyWith(
           selectedRestaurant: event.selectedRestaurant,
-          restaurantCategories: state.restaurantCategories,
-          locationData: locationData,
         ),
       );
     });
 
     on<SelectRestaurantsCategory>((event, emit) async {
       final state = this.state as LocationLoaded;
+      final testrestaurants =
+          await firebaseRemoteDataSourceImpl.getRestaurantsStream();
 
       if (event.selectedRestaurantCategory.categoryName.isEmpty) {
-        emit(
-          LocationLoaded(
-            place: state.place,
-            controller: state.controller,
-            restaurants: initRestaurantsList,
-            restaurantCategories: state.restaurantCategories,
-            locationData: locationData,
-          ),
-        );
+        emit(state.copyWith(
+          restaurants: await testrestaurants.first,
+          selectedCategory: event.selectedRestaurantCategory,
+        ));
       } else {
-        final selcetedItems = initRestaurantsList
-            .where((items) =>
-                items.category == event.selectedRestaurantCategory.categoryName)
-            .toList();
+        final tmp = await testrestaurants.first;
 
-        emit(
-          LocationLoaded(
-            place: state.place,
-            controller: state.controller,
-            restaurants: selcetedItems,
-            restaurantCategories: state.restaurantCategories,
-            selectedCategory: event.selectedRestaurantCategory,
-            locationData: locationData,
-          ),
-        );
+        final items = tmp
+            .where((element) =>
+                element.category ==
+                event.selectedRestaurantCategory.categoryName)
+            .toList();
+        print(items);
+        emit(state.copyWith(
+          restaurants: items,
+          selectedCategory: event.selectedRestaurantCategory,
+        ));
       }
     });
+
+    on<CentralizedCamera>((event, emit) async {
+      final state = this.state as LocationLoaded;
+
+      //////  0,00000301748517 ///////
+      final screenParam = await state.controller!
+          .getScreenCoordinate(LatLng(event.lat, event.lon));
+
+      await state.controller
+          ?.animateCamera(CameraUpdate.scrollBy(0, screenParam.y / 4.5));
+    });
   }
+}
+
+class CombinedLocationDataRestaurants {
+  final List<Restaurant> restaurants;
+  final LocationData locationData;
+
+  CombinedLocationDataRestaurants(this.restaurants, this.locationData);
 }

@@ -30,6 +30,7 @@ abstract class FirebaseRemoteDataSource {
   Future<bool> phoneNumberExistsCheck(String phoneNumber);
   Future<OAuthCredential> signInWithGoogle();
   Future<List<Restaurant>> getRestaurants();
+  Stream<List<Restaurant>> getRestaurantsStream();
   Future<List<Menu>> getMenu(String restarauntId);
   Future<List<MenuCategory>> getMenuCategories();
   Future<List<RestaurantCategory>> getRestaurantCategories();

@@ -119,6 +119,11 @@ class _MapPageState extends State<MapPage> {
                   restaurant.location.longitude,
                 ),
                 onTap: () {
+                  // state.controller!.moveCamera(CameraUpdate.scrollBy(
+                  //   0,
+                  //   30,
+                  // )); //MediaQuery.of(context).size.height));
+                  print('HHHHH$_panelHeightOpen');
                   context
                       .read<BottombarBloc>()
                       .add(const HideBottomBar(hide: true));
@@ -129,7 +134,11 @@ class _MapPageState extends State<MapPage> {
 
                   choosedRestaurant = state.restaurants
                       .firstWhere((element) => element.id == restaurant.id);
-
+                  final setHeight = MediaQuery.of(context).size.height * 0.1;
+                  final setWidth = MediaQuery.of(context).size.width * -0.2;
+                  context.read<LocationBloc>().add(CentralizedCamera(
+                      restaurant.location.latitude,
+                      restaurant.location.longitude));
                   panelController.open();
                 },
               );
@@ -139,6 +148,11 @@ class _MapPageState extends State<MapPage> {
             return Stack(
               children: [
                 GoogleMap(
+                  onCameraMove: (camera) {
+                    print('CCCCC${camera.target}');
+                    print('BBBB${camera.bearing}');
+                    print('TTTTT${camera.tilt}');
+                  },
                   mapToolbarEnabled: false,
                   zoomControlsEnabled: false,
                   markers: markers,
@@ -148,6 +162,7 @@ class _MapPageState extends State<MapPage> {
                       state.place.lat,
                       state.place.lon,
                     ),
+                    zoom: 15,
                   ),
                   onMapCreated: (controller) {
                     context

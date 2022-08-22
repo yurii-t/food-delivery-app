@@ -2,20 +2,39 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class CafeCarousel extends StatefulWidget {
-  const CafeCarousel({Key? key}) : super(key: key);
+  final String restaurantImage;
+  const CafeCarousel({required this.restaurantImage, Key? key})
+      : super(key: key);
 
   @override
   State<CafeCarousel> createState() => Cafe_CarouselState();
 }
 
 class Cafe_CarouselState extends State<CafeCarousel> {
-  List<dynamic> imgSlider = <Color>[Colors.black, Colors.amber, Colors.pink];
-
   int _sliderCurrent = 0;
   final CarouselController _sliderController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
+    final List<Image> imgSlider = [
+      Image.network(
+        widget.restaurantImage,
+        fit: BoxFit.cover,
+      ),
+      Image.network(
+        widget.restaurantImage,
+        colorBlendMode: BlendMode.difference,
+        fit: BoxFit.cover,
+        color: Colors.amber,
+      ),
+      Image.network(
+        widget.restaurantImage,
+        colorBlendMode: BlendMode.colorBurn,
+        color: Colors.red,
+        fit: BoxFit.cover,
+      ),
+    ];
+
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
@@ -34,15 +53,13 @@ class Cafe_CarouselState extends State<CafeCarousel> {
           ),
           itemBuilder: (context, index, realIdx) {
             return Container(
+              clipBehavior: Clip.hardEdge,
               width: 343,
               height: 88,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(imgSlider[index].toString()),
-                ),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(24)),
               ),
+              child: imgSlider[index],
             );
           },
         ),

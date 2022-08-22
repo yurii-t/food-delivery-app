@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/presentation/pages/profile/widgets/profile_divider.dart';
 import 'package:food_delivery_app/theme/app_colors.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class AboutApplicationPage extends StatelessWidget {
   const AboutApplicationPage({Key? key}) : super(key: key);
@@ -153,11 +156,42 @@ class AboutApplicationPage extends StatelessWidget {
               height: 34,
             ),
             GestureDetector(
+              onTap: () {
+                //https://pageflutter.com/privacy-policy/
+                showModalBottomSheet<Widget?>(
+                  useRootNavigator: true,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 20,
+                      ),
+                      child: const WebView(
+                        javascriptMode: JavascriptMode.unrestricted,
+                        gestureRecognizers: {
+                          Factory<VerticalDragGestureRecognizer>(
+                            VerticalDragGestureRecognizer.new,
+                          ),
+                        },
+                        initialUrl: 'https://pageflutter.com/privacy-policy/',
+                      ),
+                    );
+                  },
+                );
+              },
               child: Row(
                 children: [
                   const Expanded(
                     child: Text(
-                      'User agreement',
+                      'User agreement(webview)',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,

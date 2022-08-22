@@ -31,8 +31,15 @@ class LocationLoaded extends LocationState {
   });
 
   @override
-  List<Object?> get props =>
-      [controller, place, restaurants, selectedRestaurant, selectedCategory];
+  List<Object?> get props => [
+        controller,
+        place,
+        restaurants,
+        restaurantCategories,
+        selectedRestaurant,
+        selectedCategory,
+        locationData,
+      ];
 
   LocationLoaded copyWith({
     Place? place,
@@ -47,7 +54,7 @@ class LocationLoaded extends LocationState {
       place: place ?? this.place,
       controller: controller ?? this.controller,
       restaurants: restaurants ?? this.restaurants,
-      selectedRestaurant: selectedRestaurant ?? this.selectedRestaurant,
+      selectedRestaurant: selectedRestaurant, //////
       restaurantCategories: restaurantCategories ?? this.restaurantCategories,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       locationData: locationData ?? this.locationData,

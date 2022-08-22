@@ -46,6 +46,9 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   http: ^0.13.4
   flutter_dotenv: ^5.0.2
+  rxdart: ^0.27.5
+  sliver_tools: ^0.2.7
+  webview_flutter: ^3.0.4
   
   flutter_bloc: ^8.0.1
   bloc_concurrency: ^0.2.0 

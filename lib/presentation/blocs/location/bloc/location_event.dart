@@ -51,3 +51,12 @@ class SelectRestaurantsCategory extends LocationEvent {
   @override
   List<Object> get props => [selectedRestaurantCategory];
 }
+
+class CentralizedCamera extends LocationEvent {
+  final double lat;
+  final double lon;
+
+  const CentralizedCamera(this.lat, this.lon);
+  @override
+  List<Object> get props => [lat, lon];
+}

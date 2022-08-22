@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_delivery_app/data/models/restaurant.dart';
 import 'package:food_delivery_app/presentation/blocs/favorites/bloc/favorites_bloc.dart';
+import 'package:food_delivery_app/presentation/pages/home/cafe/widgets/cafe_carousel.dart';
 
 import 'package:food_delivery_app/routes/app_router.gr.dart';
 import 'package:food_delivery_app/theme/app_colors.dart';
@@ -144,18 +145,8 @@ class CafePage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Container(
-              height: 206,
-              decoration: BoxDecoration(
-                color: Colors.amber,
-                borderRadius: BorderRadius.circular(24),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                    restaurant?.image ?? '',
-                  ),
-                ),
-              ),
+            CafeCarousel(
+              restaurantImage: restaurant?.image ?? '',
             ),
             const SizedBox(
               height: 37,

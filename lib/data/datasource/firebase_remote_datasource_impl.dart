@@ -115,6 +115,16 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Stream<List<Restaurant>> getRestaurantsStream() {
+    final restaurants =
+        _firebaseFirestore.collection('restaurants').snapshots();
+
+    return restaurants.map((snapshot) => snapshot.docs
+        .map(Restaurant.fromSnapShot)
+        .toList()); //.docs.map(Restaurant.fromSnapShot).toList();
+  }
+
+  @override
   Future<List<Menu>> getMenu(String restarauntId) async {
     final restCollection = _firebaseFirestore.collection('restaurants');
 
